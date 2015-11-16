@@ -1,4 +1,4 @@
-
+//This is a Review Class
 public class Review {
 	private int recordId; 
 	private String productId; 
@@ -23,7 +23,7 @@ public class Review {
 		return recordId;
 	}
 	public void setRecordId(int recordId) {
-		this.recordId = recordId;
+		this.recordId = recordId; 
 	}
 	public String getProductTitle() {
 		return productTitle;
