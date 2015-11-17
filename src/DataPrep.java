@@ -43,7 +43,7 @@ public class DataPrep {
 		review += r.getProductId() + ", "; 
 		review = review + "\"" + r.getProductTitle() + "\"" + ", ";
 		review = review + r.getPrice() + ", "; 
-		review = review + r.getUserId(); 
+		review = review + r.getUserId() + ", "; 
 		review = review + "\"" + r.getProfileName() + "\"" + ", ";
 		review = review + r.getHelpfulness() + ", "; 
 		review = review + r.getScore() + ", ";
