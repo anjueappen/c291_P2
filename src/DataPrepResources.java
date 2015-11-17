@@ -1,7 +1,8 @@
 import java.util.regex.Pattern;
 
 /**
- * Class that handles regex and pattern matching. Assumes that review fields read from standard in will be separated by a newline.
+ * Class that handles regex and pattern matching. 
+ * Patterns assume that review fields read from standard in will be separated by a newline.
  *
  */
 public class DataPrepResources {

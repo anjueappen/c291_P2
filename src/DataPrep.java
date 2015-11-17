@@ -20,6 +20,9 @@ public class DataPrep {
 			reviews.add(d.getNextReview(console)); 
 		}
 		d.makeReviewsFile(reviews);
+		
+		// pterms.txt
+		d.makePTermsFile(reviews);
 	}
 	
 	/**
@@ -121,4 +124,30 @@ public class DataPrep {
 		
 		return r; 
 	}
+
+	/**
+	 * This function creates the pterms.txt file from an ArrayList of reviews.
+	 * The Review class takes care of calculating its own terms.
+	 */
+	private void makePTermsFile(ArrayList<Review> reviews) {
+		try {
+			PrintWriter writer = new PrintWriter("pterms.txt", "UTF-8");
+			Integer index = 1; 
+			for (Review review: reviews){
+				ArrayList<String> pterms = review.getPTerms();
+				for (String pterm: pterms) {
+					writer.println(pterm + "," + index);
+				}
+				index++; 
+			}
+			writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
