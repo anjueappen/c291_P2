@@ -16,8 +16,11 @@ public class Review {
 	private String summary;
 	private String text; 
 	private ArrayList<String> pTerms;
+	private ArrayList<String> rTerms;
 	
 	public Review() {
+		this.pTerms = new ArrayList<String>();
+		this.rTerms = new ArrayList<String>();
 
 	}
 	
@@ -39,7 +42,7 @@ public class Review {
 	}
 	public void setProductTitle(String productTitle) {
 		this.productTitle = productTitle;
-		this.pTerms = calculatePTerms();
+		this.calculatePTerms();
 	}
 	public String getPrice() {
 		return price;
@@ -82,12 +85,14 @@ public class Review {
 	}
 	public void setSummary(String summary) {
 		this.summary = summary;
+		this.calculateRTerms(summary);
 	}
 	public String getText() {
 		return text;
 	}
 	public void setText(String text) {
 		this.text = text;
+		this.calculateRTerms(text);
 	}
 	
 	/**
@@ -97,23 +102,42 @@ public class Review {
 	 * Terms are all lowercase.
 	 * @return ArrayList<String> of product title terms.
 	 */
-	public ArrayList<String> calculatePTerms() {
+	public void calculatePTerms() {
 		String pTitle = this.productTitle;
-		ArrayList<String> pTerms = new ArrayList<String>();
 		
-		String PTERM_PATTERN = "[0-9a-zA-Z_]{3,}+"; 
-		Pattern pterm = Pattern.compile(PTERM_PATTERN);
+		String TERM_PATTERN = "[0-9a-zA-Z_]{3,}+"; 
+		Pattern pterm = Pattern.compile(TERM_PATTERN);
 		Matcher matchPTerm = pterm.matcher(pTitle);
 		
 		while (matchPTerm.find()) {
-			pTerms.add((matchPTerm.group()).toLowerCase());
-		}
-			
-		return pTerms;
+			this.pTerms.add((matchPTerm.group()).toLowerCase());
+		}		
 	}
 	
 	public ArrayList<String> getPTerms() {
 		return this.pTerms;
+	}
+	
+	/**
+	 * Terms of length 3 or more characters extracted from the fields review summary and review text.
+	 * A term is a consecutive sequence of alphanumeric and underscore '_' characters, i.e [0-9a-zA-Z_] 
+	 * Terms are all lowercase.
+	 * @return ArrayList<String> of product title terms.
+	 *
+	 */
+	public void calculateRTerms(String r) {
+		String TERM_PATTERN = "[0-9a-zA-Z_]{3,}+"; 
+		Pattern rterm = Pattern.compile(TERM_PATTERN);
+		Matcher matchRTerm = rterm.matcher(r);
+				
+		while (matchRTerm.find()) {
+			this.rTerms.add((matchRTerm.group()).toLowerCase());
+		}
+					
+	}
+	
+	public ArrayList<String> getRTerms() {
+		return this.rTerms;
 	}
 
 }

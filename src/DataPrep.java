@@ -23,6 +23,9 @@ public class DataPrep {
 		
 		// pterms.txt
 		d.makePTermsFile(reviews);
+		
+		// rterms.txt
+		d.makeRTermsFile(reviews);
 	}
 	
 	/**
@@ -149,5 +152,32 @@ public class DataPrep {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 *  This function creates the rterms.txt file from an ArrayList of reviews.
+	 * The Review class takes care of calculating its own review terms.
+	 */
+	private void makeRTermsFile(ArrayList<Review> reviews) {
+		try {
+			PrintWriter writer = new PrintWriter("rterms.txt", "UTF-8");
+			Integer index = 1; 
+			for (Review review: reviews){
+				ArrayList<String> rterms = review.getRTerms();
+				for (String rterm: rterms) {
+					writer.println(rterm + "," + index);
+				}
+				index++; 
+			}
+			writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	
 }
