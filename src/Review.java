@@ -122,7 +122,8 @@ public class Review {
 	 * Terms of length 3 or more characters extracted from the fields review summary and review text.
 	 * A term is a consecutive sequence of alphanumeric and underscore '_' characters, i.e [0-9a-zA-Z_] 
 	 * Terms are all lowercase.
-	 * @return ArrayList<String> of product title terms.
+	 * @param String r, this will be called for either review summary or review text when they are first initialized.
+	 * @return ArrayList<String> of review summary and review text terms.
 	 *
 	 */
 	public void calculateRTerms(String r) {

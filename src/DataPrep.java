@@ -26,6 +26,9 @@ public class DataPrep {
 		
 		// rterms.txt
 		d.makeRTermsFile(reviews);
+		
+		// scores.txt
+		d.makeScoresFile(reviews);
 	}
 	
 	/**
@@ -178,6 +181,25 @@ public class DataPrep {
 		}
 	}
 	
-	
+	/**
+	 *  This function creates the scores.txt file from an ArrayList of reviews.
+	 */
+	private void makeScoresFile(ArrayList<Review> reviews) {
+		try {
+			PrintWriter writer = new PrintWriter("scores.txt", "UTF-8");
+			Integer index = 1; 
+			for (Review review: reviews){
+				writer.println(review.getScore() + "," + index);
+				index++; 
+			}
+			writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 }
