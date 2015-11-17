@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
-
-
 public class DataPrep {
 	
 	private static DataPrepResources dp = new DataPrepResources(); 
@@ -19,6 +17,7 @@ public class DataPrep {
 		while(console.hasNextLine()){
 			reviews.add(d.getNextReview(console)); 
 		}
+		d.makeReviewsFile(reviews);
 	}
 	
 	private void makeReviewsFile(ArrayList<Review> reviews){
@@ -41,7 +40,7 @@ public class DataPrep {
 	
 	private String makeReviewsTxtFormat(Review r){
 		String review = "";
-		review = review + r.getProductId() + ", "; 
+		review += r.getProductId() + ", "; 
 		review = review + "\"" + r.getProductTitle() + "\"" + ", ";
 		review = review + r.getPrice() + ", "; 
 		review = review + r.getUserId(); 
@@ -57,7 +56,7 @@ public class DataPrep {
 		String record = ""; 
 		Review r = new Review(); 
 		while(console.hasNextLine()){
-			String line = console.nextLine().replaceAll("\"", "&quot;"); 
+			String line = console.nextLine().replaceAll("\"", "&quot;");
 			if(line.equals("")){
 				break; 
 			}
@@ -76,36 +75,37 @@ public class DataPrep {
 		Matcher text = dp.text.matcher(record);
 		
 		if(pid.find()){
-			r.setProductId(pid.group(0));
+			r.setProductId((pid.group(1)));
 		}
+		
 		if(title.find()){
-			r.setProductTitle(title.group(0));
+			r.setProductTitle((title.group(1)));	
 		}
 		if(price.find()){
-			r.setPrice(price.group(0));
+			r.setPrice((price.group(1)));
 		}
 		if(uid.find()){
-			r.setUserId(uid.group(0));	
+			r.setUserId((uid.group(1)));	
 		}
 		if(pname.find()){
-			r.setProfileName(pname.group(0));
+			r.setProfileName((pname.group(1)));
 		}
 		if(help.find()){
-			r.setHelpfulness(help.group(0));
+			r.setHelpfulness((help.group(1)));
 		}
 		if(score.find()){
-			r.setScore(score.group(0));
+			r.setScore((score.group(1)));
 		}
 		if(time.find()){
-			r.setTime(time.group(0));
+			r.setTime((time.group(1)));
 		}
 		if(summary.find()){
-			r.setSummary(summary.group(0));
+			r.setSummary((summary.group(1)));
 		}
 		if(text.find()){
-			r.setText(text.group(0));
+			r.setText((text.group(1)));
 		}
-
+		
 		return r; 
 	}
 }

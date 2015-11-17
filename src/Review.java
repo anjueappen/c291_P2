@@ -12,6 +12,10 @@ public class Review {
 	private String summary;
 	private String text; 
 	
+	public Review() {
+		
+	}
+	
 	public String getProductId() {
 		return productId;
 	}
