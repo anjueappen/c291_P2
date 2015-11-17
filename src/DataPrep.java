@@ -13,6 +13,8 @@ public class DataPrep {
 	public static void main(String[] args) throws IOException { 
 		DataPrep d = new DataPrep(); 
 		Scanner console = new Scanner(System.in);
+		
+		// reviews.txt
 		ArrayList<Review> reviews = new ArrayList<Review>(); 
 		while(console.hasNextLine()){
 			reviews.add(d.getNextReview(console)); 
@@ -20,6 +22,9 @@ public class DataPrep {
 		d.makeReviewsFile(reviews);
 	}
 	
+	/**
+	 * This function creates the reviews.txt file from an ArrayList of reviews.
+	 */
 	private void makeReviewsFile(ArrayList<Review> reviews){
 		try {
 			PrintWriter writer = new PrintWriter("reviews.txt", "UTF-8");
@@ -38,20 +43,28 @@ public class DataPrep {
 		}
 	}
 	
+	/**
+	 * This function creates the review string to be included into reviews.txt.
+	 * Called by makesReviewsFile().
+	 */
 	private String makeReviewsTxtFormat(Review r){
 		String review = "";
 		review += r.getProductId() + ", "; 
-		review = review + "\"" + r.getProductTitle() + "\"" + ", ";
-		review = review + r.getPrice() + ", "; 
-		review = review + r.getUserId() + ", "; 
-		review = review + "\"" + r.getProfileName() + "\"" + ", ";
-		review = review + r.getHelpfulness() + ", "; 
-		review = review + r.getScore() + ", ";
-		review = review + r.getTime() + ", ";
-		review = review + "\"" + r.getSummary() + "\"" + ", ";
-		review = review + "\"" + r.getText() + "\"";
+		review +=  "\"" + r.getProductTitle() + "\"" + ", ";
+		review +=  r.getPrice() + ", "; 
+		review +=  r.getUserId() + ", "; 
+		review +=  "\"" + r.getProfileName() + "\"" + ", ";
+		review +=  r.getHelpfulness() + ", "; 
+		review +=  r.getScore() + ", ";
+		review +=  r.getTime() + ", ";
+		review +=  "\"" + r.getSummary() + "\"" + ", ";
+		review +=  "\"" + r.getText() + "\"";
 		return review; 
 	}
+	
+	/**
+	 * Returns a Review from line read from standard input. Uses Regex matching from DataPrepResources.
+	 */
 	private Review getNextReview(Scanner console) {
 		String record = ""; 
 		Review r = new Review(); 
@@ -61,7 +74,7 @@ public class DataPrep {
 				break; 
 			}
 			line = line.replaceAll("\\\\", "\\\\\\\\"); 
-			record = record + line; 
+			record += line + '\n'; 
 		}
 		Matcher pid = dp.pid.matcher(record); 
 		Matcher title = dp.title.matcher(record);

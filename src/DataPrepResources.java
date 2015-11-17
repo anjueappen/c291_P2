@@ -1,18 +1,25 @@
 import java.util.regex.Pattern;
 
+/**
+ * Class that handles regex and pattern matching. Assumes that review fields read from standard in will be separated by a newline.
+ *
+ */
 public class DataPrepResources {
-
-	private static String PID_PATTERN = "product/productId: (.+)(product/title)"; 
-	private static String TITLE_PATTERN = "product/title: (.+)(product/price)"; 
-	private static String PRICE_PATTERN = "product/price: (.+)(review/userId)"; 
-	private static String USERID_PATTERN = "review/userId: (.+)(review/profileName)"; 
-	private static String PROFILENAME_PATTERN = "review/profileName: (.+)(review/helpfulness)"; 
-	private static String HELPFULNESS_PATTERN = "review/helpfulness: (.+)(review/score)"; 
-	private static String SCORE_PATTERN = "review/score: (.+)(review/time)"; 
-	private static String TIME_PATTERN = "review/time: (.+)(review/summary)"; 
-	private static String SUMMARY_PATTERN = "review/summary: (.+)(review/text)"; 
-	private static String TEXT_PATTERN = "review/text: (.+)"; 
 	
+	public DataPrepResources() {
+		
+	}
+	
+	private static String PID_PATTERN = "product/productId: (.+)(\n)"; 
+	private static String TITLE_PATTERN = "product/title: (.+)(\n)"; 
+	private static String PRICE_PATTERN = "product/price: (.+)(\n)"; 
+	private static String USERID_PATTERN = "review/userId: (.+)(\n)"; 
+	private static String PROFILENAME_PATTERN = "review/profileName: (.+)(\n)"; 
+	private static String HELPFULNESS_PATTERN = "review/helpfulness: (.+)(\n)"; 
+	private static String SCORE_PATTERN = "review/score: (.+)(\n)"; 
+	private static String TIME_PATTERN = "review/time: (.+)(\n)"; 
+	private static String SUMMARY_PATTERN = "review/summary: (.+)(\n)"; 
+	private static String TEXT_PATTERN = "review/text: (.+)"; 
 	
 	public Pattern pid = Pattern.compile(PID_PATTERN);
 	public Pattern title = Pattern.compile(TITLE_PATTERN);
@@ -25,7 +32,4 @@ public class DataPrepResources {
 	public Pattern summary = Pattern.compile(SUMMARY_PATTERN);
 	public Pattern text = Pattern.compile(TEXT_PATTERN);
 	
-	public DataPrepResources() {
-		
-	}
 }
