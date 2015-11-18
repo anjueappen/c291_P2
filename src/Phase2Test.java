@@ -11,7 +11,7 @@ public class Phase2Test {
 	
 	public static void main(String[] arg) {
 		DatabaseConfig dbConfig= new DatabaseConfig();
-		//dbConfig.setSortedDuplicates(true); // to allow duplicate keys
+		dbConfig.setSortedDuplicates(true); // to allow duplicate keys
 		dbConfig.setType(DatabaseType.BTREE); // sets storage type to BTree
 		dbConfig.setAllowCreate(true); // create a database if it doesn't exist
 		
@@ -30,6 +30,7 @@ public class Phase2Test {
 		 * http://download.oracle.com/berkeley-db/docs/je/1.5.3/GettingStartedGuide/Positioning.html
 		 * Accessed November 16, 2015
 		 */
+		
 		Cursor cursor = null;
 		try {
 		    // Open the cursor. 
@@ -68,10 +69,11 @@ public class Phase2Test {
 		 * Working with duplicate objects
 		 */
 		/*
+		Cursor cursor = null;
 		try {
 		    // Create DatabaseEntry objects
 		    // searchKey is some String.
-			String searchKey = "3.0,3";
+			String searchKey = "5.0";
 		    DatabaseEntry theKey = new DatabaseEntry(searchKey.getBytes("UTF-8"));
 		    DatabaseEntry theData = new DatabaseEntry();
 
