@@ -17,6 +17,10 @@ Phase 2:
 // use Perl script provided from eclass
 // if temp.txt already exists, try removing it and running the command again if it complains about file already existing
 > chmod +x break.pl  // you may only need to do this once?
-> cat sorted_scores.txt | ./break.pl > temp.txt | db_load -c duplicates=1 -f sorted_scores.txt -T -t btree sc.idx
+> cat sorted_scores.txt | ./break.pl > temp.txt
+> db_load -c duplicates=1 -f temp.txt -T -t btree sc.idx
 
+// to check index file
+> db_dump -p sc.idx
+ 
 Phase 3:
