@@ -6,6 +6,13 @@ export CLASSPATH=$CLASSPATH:.:/usr/share/java/db.jar
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/oracle/lib
 ```
 
+OR you can run a script in the src file (this script can have more setup stuff if needed)
+```
+cd src
+chmod +x init.sh
+./init.sh
+```
+
 ## Phase 1:
 ```
 cd src
@@ -15,38 +22,10 @@ cat ../res/10.txt | java DataPrep
 This creates the four files needed: reviews.txt, pterms.txt, rterms.txt, scores.txt
 
 ## Phase 2:
-still in src folder
-use Perl script from eclass
+We will be using our Phase 2 script. This generates the index files (rw.idx, pt.idx, rt.idx, sc.idx) and cleans up all temporary files used!
 ```
-chmod +x break.pl
-```
-
-If sorted_[x].txt, temp_[x].txt or [xx].idx files already exist, delete them first and then run these commands.
-
-For reviews
-```
-cat reviews.txt | ./break.pl > temp_reviews.txt
-db_load -f temp_reviews.txt -T -t hash rw.idx
-```
-
-For pterms
-```
-sort -t, -k1,1 -k2,2n --unique pterms.txt > sorted_pterms.txt
-cat sorted_pterms.txt | ./break.pl > temp_pterms.txt 
-db_load -c duplicates=1 -f temp_pterms.txt -T -t btree pt.idx
-```
-
-For rterms
-```
-sort -t, -k1,1 -k2,2n --unique rterms.txt > sorted_rterms.txt
-cat sorted_rterms.txt | ./break.pl > temp_rterms.txt
-db_load -c duplicates=1 -f temp_rterms.txt -T -t btree rt.idx
-```
-For scores
-```
-sort -t, -k1,1n, -k2,2n --unique scores.txt > sorted_scores.txt
-cat sorted_scores.txt | ./break.pl > temp_scores.txt
-db_load -c duplicates=1 -f temp_scores.txt -T -t btree sc.idx
+chmod +x phase2.sh
+./phase2.sh
 ```
 
 To check any of the index files
