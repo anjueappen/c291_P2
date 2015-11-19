@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 import com.sleepycat.db.*;
 
@@ -11,13 +12,17 @@ public class Phase2Test {
 	
 	public static void main(String[] arg) {
 		DatabaseConfig dbConfig= new DatabaseConfig();
-		dbConfig.setSortedDuplicates(true); // to allow duplicate keys
+		//dbConfig.setSortedDuplicates(true); // to allow duplicate keys
 		dbConfig.setType(DatabaseType.BTREE); // sets storage type to BTree
 		dbConfig.setAllowCreate(true); // create a database if it doesn't exist
 		
 		Database std_db = null;
 		try {
-			std_db = new Database("sc.idx", null, dbConfig);
+			if (arg[0].equals("rw.idx")) {
+				dbConfig.setType(DatabaseType.HASH);
+				dbConfig.setSortedDuplicates(false); // to allow duplicate keys
+			}
+			std_db = new Database(arg[0], null, dbConfig);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,8 +61,11 @@ public class Phase2Test {
 		        String dataString = new String(foundData.getData());
 		        System.out.println("Key | Data : " + keyString + " | " + 
 		                       dataString + "");
+		        
+		        foundKey = new DatabaseEntry();
+		        foundData = new DatabaseEntry();
 		    }
-		    cursor.close();
+			
 		} catch (DatabaseException de) {
 		    System.err.println("Error accessing database." + de);
 		}
@@ -68,41 +76,59 @@ public class Phase2Test {
 		 * Accessed November 16, 2015
 		 * Working with duplicate objects
 		 */
-		/*
-		Cursor cursor = null;
-		try {
-		    // Create DatabaseEntry objects
-		    // searchKey is some String.
-			String searchKey = "5.0";
-		    DatabaseEntry theKey = new DatabaseEntry(searchKey.getBytes("UTF-8"));
-		    DatabaseEntry theData = new DatabaseEntry();
+		Scanner user_input = new Scanner( System.in );
+		while(true) {
+			String searchKey;
+			System.out.print("What would you like to search for? [E to exit]:  ");
+			searchKey = user_input.next( );
+			if (searchKey.equals("E")) {
+			    break;
+			}
+			try {
+			    // Create DatabaseEntry objects
+			    // searchKey is some String.
+			    DatabaseEntry theKey = new DatabaseEntry(searchKey.getBytes("UTF-8"));
+			    DatabaseEntry theData = new DatabaseEntry();
 
-		    // Open a cursor using a database handle
-		    cursor = std_db.openCursor(null, null);
+			    // Open a cursor using a database handle
+			    cursor = std_db.openCursor(null, null);
 
-		    // Position the cursor
-		    // Ignoring the return value for clarity
-		    OperationStatus retVal = cursor.getSearchKey(theKey, theData, 
-		                                                 LockMode.DEFAULT);
-		    
-		    // Count the number of duplicates. If the count is greater than 1, 
-		    // print the duplicates.
-		    if (cursor.count() > 1) {
-		        while (retVal == OperationStatus.SUCCESS) {
-		            String keyString = new String(theKey.getData());
+			    // Position the cursor
+			    // Ignoring the return value for clarity
+			    OperationStatus retVal = cursor.getSearchKey(theKey, theData, 
+			                                                 LockMode.DEFAULT);
+			    
+			    // Count the number of duplicates. If the count is greater than 1, 
+			    // print the duplicates.
+			    if (cursor.count() > 1) {
+			        while (retVal == OperationStatus.SUCCESS) {
+			            String keyString = new String(theKey.getData());
+			            String dataString = new String(theData.getData());
+			            System.out.println("Key | Data : " +  keyString + " | " + 
+			                               dataString + "");
+			   
+			            retVal = cursor.getNextDup(theKey, theData, LockMode.DEFAULT);
+			        }
+			    } else {	//only one value
+			    	String keyString = new String(theKey.getData());
 		            String dataString = new String(theData.getData());
 		            System.out.println("Key | Data : " +  keyString + " | " + 
 		                               dataString + "");
-		   
-		            retVal = cursor.getNextDup(theKey, theData, LockMode.DEFAULT);
-		        }
-		    }
-		    // Make sure to close the cursor
-			  cursor.close();
-		} catch (Exception e) {
-		    // Exception handling goes here
-		} 
-		*/
-		
+			    }
+			    // Make sure to close the cursor
+			} catch (Exception e) {
+			    // Exception handling goes here
+			} 
+		}
+
+		user_input.close();
+		try {
+			cursor.close();
+			std_db.close();
+		} catch (DatabaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
 	}
 }

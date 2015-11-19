@@ -36,8 +36,6 @@ hung
 4
 its
 4
-its
-4
 jacket
 1
 misses
@@ -48,10 +46,6 @@ novelty
 3
 nun
 2
-nun
-2
-nun
-3
 nun
 3
 only
