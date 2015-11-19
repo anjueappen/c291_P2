@@ -12,6 +12,8 @@ rm -f pt.idx
 rm -f rt.idx
 rm -f sc.idx
 
+chmod +x break.pl
+
 cat reviews.txt | ./break.pl > temp_reviews.txt
 db_load -f temp_reviews.txt -T -t hash rw.idx
 
