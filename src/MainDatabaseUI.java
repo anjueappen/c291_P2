@@ -25,7 +25,7 @@ public class MainDatabaseUI {
 	}
 	
 	public void notImplemented() {
-		System.out.println("Not implemented! Please hold try again soon!");
+		System.out.println("Not implemented! Please hold on and try again soon!");
 	}
 	public void startUI() {
 		Scanner input = new Scanner(System.in);
