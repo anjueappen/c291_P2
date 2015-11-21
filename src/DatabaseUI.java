@@ -2,25 +2,24 @@ import java.util.Scanner;
 import com.sleepycat.db.Database;
 
 
-public class MainDatabaseUI {
+public class DatabaseUI {
 	
 	public static Database connection; 
 
 	public static void main(String[] args) {
 		 
-		MainDatabaseUI d = new MainDatabaseUI(); 
+		DatabaseUI d = new DatabaseUI(); 
 		d.startUI(); 
 	}
 	
 	public void displayMenu() {
 		System.out.println("Welcome to the Database!");
 		System.out.println("Please select from one of the options below: ");
-		System.out.println("(1) Create and populate database.");
-		System.out.println("(2) Conduct a single query on database with a key.");
-		System.out.println("(3) Conduct a range query on a database with a range of keys.");
-		System.out.println("(4) Conduct a single query on database with data.");
-		System.out.println("(5) Destroy the database.");
-		System.out.println("(6) Quit");
+		System.out.println("(1) Query by whole words.");
+		System.out.println("(2) Query by partial words");
+		System.out.println("(3) Query by ranges");
+		System.out.println("(4) Destroy the database.");
+		System.out.println("(5) Quit");
 		System.out.print("Enter your choice: ");
 	}
 	
