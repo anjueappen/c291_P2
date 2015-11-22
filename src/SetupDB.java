@@ -1,7 +1,6 @@
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 
 import com.sleepycat.db.Cursor;
 import com.sleepycat.db.Database;
@@ -98,11 +97,21 @@ public class SetupDB {
 			System.err.println("Error accessing database." + de);
 		}
 	}
-	/**	
-	 * http://download.oracle.com/berkeley-db/docs/je/1.5.3/GettingStartedGuide/Positioning.html
-	 * Accessed November 16, 2015
-	 * Working with duplicate objects
-	 */
+	
+	public void closeDBs() {
+		
+		try {
+			pt_db.close();
+			sc_db.close();
+			rt_db.close();
+			rw_db.close(); 
+		} catch (DatabaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
 
 }
 
