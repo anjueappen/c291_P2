@@ -35,6 +35,8 @@ public class FullMatchQuery{
 	}
 	
 	/* "p:" search using pt.idx*/
+	/*TESTING SO DID NOT ACCOUNT FOR DUPLICATES OPTIMIZATION YET
+	 * Would be an if statement to check*/
 	public void ptermsQuery(String key){
 		String searchKey = key;
 		ArrayList<String> reviewIds = new ArrayList<>();
@@ -79,6 +81,8 @@ public class FullMatchQuery{
 	}
 	
 	/* "r:" search using rt.idx*/
+	/*TESTING SO DID NOT ACCOUNT FOR DUPLICATES OPTIMIZATION YET
+	 * Would be an if statement to check*/
 	public void rtermsQuery(String key){
 		String searchKey = key;
 		ArrayList<String> reviewIds = new ArrayList<>();
@@ -115,6 +119,7 @@ public class FullMatchQuery{
 	            String dataString = new String(theData.getData());
 	            System.out.println("Key | Data : " +  keyString + " | " + 
 	                               dataString + "");
+	            reviewIds.add(dataString);
 		    }
 		    // Make sure to close the cursor
 		} catch (Exception e) {
