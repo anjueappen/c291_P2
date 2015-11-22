@@ -30,7 +30,7 @@ public class QuerySearch {
 		    DatabaseEntry theKey = new DatabaseEntry(searchKey.getBytes("UTF-8"));
 		    DatabaseEntry theData = new DatabaseEntry();
 		    
-		    if (searchType == "p") {
+		    if (searchType.equals("p")) {
 		    	std_db = pt_db;
 		    } else {
 		    	std_db = rt_db;
@@ -57,6 +57,7 @@ public class QuerySearch {
 		   
 		            retVal = cursor.getNextDup(theKey, theData, LockMode.DEFAULT);
 		            results.add(dataString);
+		            System.out.println("dup "+ dataString);
 		        }
 		    } else {	//only one value
 		    	String keyString = new String(theKey.getData());
@@ -64,12 +65,13 @@ public class QuerySearch {
 	            System.out.println("Key | Data : " +  keyString + " | " + 
 	                               dataString + "");
 	            results.add(dataString);
+	            System.out.println("sing "+ dataString);
 		    }
 		    // Make sure to close the cursor
 		} catch (Exception e) {
 		    // Exception handling goes here
 		} 
-		
+		System.out.println("results size" + results.size());
 		return results;
 	}
 	
