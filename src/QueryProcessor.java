@@ -1,7 +1,27 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.xml.stream.events.StartDocument;
 
 public class QueryProcessor {
+	
+	public void rangeSearchOptimized(){
+		Pattern pattern = Pattern.compile("([a-zA-Z0-9\\.]+ |)(([a-zA-Z]+)( > | < )([0-9\\./]+))"); 
+		Matcher m = pattern.matcher("r < 5 x > 6 x < 2015/09/07"); 
+		while(m.find()){
+			if(m.group(1) != ""){
+				//Do this first 
+			}else{
+				//start with the ranges 
+			}
+		}
+	}
+	
+	
+	
+	
 	protected String PMATCH = "p:";
 	protected String RMATCH = "r:";
 	protected String RSCOREMATCH = "rscore";
