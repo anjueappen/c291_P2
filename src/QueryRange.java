@@ -1,4 +1,6 @@
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import com.sleepycat.db.Cursor;
 import com.sleepycat.db.Database;
@@ -51,8 +53,15 @@ public class QueryRange {
 		try {
 			if(rangeType == "rscore"){
 				c = sc_db.openCursor(null, null); 
-			}else if (rangeType == "pprice" | rangeType == "rdate"){
+			}else if (rangeType == "pprice" ){
 				c = rw_db.openCursor(null, null); 
+			}else if(rangeType == "rdate"){
+				c = rw_db.openCursor(null, null); 
+				SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
+				String date = String.valueOf(((Date) fmt.parse(value)).getTime()); 
+				data.setData(date.getBytes());
+				data.setSize(date.length());
+				
 			}else{
 				System.out.println("Range queries can only occur for score, product price (pprice) or review date (rdate)."); 
 				c = rw_db.openCursor(null, null);  
