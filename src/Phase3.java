@@ -1,4 +1,6 @@
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import com.sleepycat.db.Database;
@@ -12,6 +14,7 @@ public class Phase3 {
 	protected QueryProcessor qp;
 	protected QuerySearch query_search;
 	protected QueryRange query_range;
+	protected QueryReviews query_reviews;
 	
 	protected Database rw_db;
 	protected Database pt_db;
@@ -22,9 +25,10 @@ public class Phase3 {
 		input = new Scanner(System.in);
 		polling = true; 
 		qp = new QueryProcessor();
-		query_search = new QuerySearch();
-		query_range = new QueryRange(pt_db, rt_db, sc_db, rw_db);
 		createDatabases();
+		query_search = new QuerySearch(pt_db, rt_db);
+		query_range = new QueryRange(pt_db, rt_db, sc_db, rw_db);
+		query_reviews = new QueryReviews(rw_db);
 	}
 	
 	public static void main(String[] args) {
@@ -33,6 +37,7 @@ public class Phase3 {
 	}
 	
 	public void start() {
+		ArrayList<String> results = new ArrayList<String>();
 		while (polling) {
 			String query;			
 			System.out.print("Enter a query. [E to exit]: ");
@@ -41,7 +46,8 @@ public class Phase3 {
 			    break;
 			}
 			try {
-				parseInput(query);
+				results = parseInput(query);
+				query_reviews.getReviews(results);
 			} catch (Exception e) {
 				// TODO handle
 			}
@@ -50,7 +56,7 @@ public class Phase3 {
 		
 	}
 
-	public void parseInput(String query) {
+	public ArrayList<String> parseInput(String query) {
 		String[] split_query = query.split("\\s+");
 		
 		for (int i = 0;  i < split_query.length; ) {
@@ -87,6 +93,8 @@ public class Phase3 {
 			}
 			i++;
 		}
+		return new ArrayList<String>(Arrays.asList(
+				"1", "2", "3"));	// this will be the review indices of the results of query
 	}
 	
 	public void createDatabases() {
@@ -110,5 +118,7 @@ public class Phase3 {
 		} catch (DatabaseException e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println("Finished creating databases.");
 	}
 }
