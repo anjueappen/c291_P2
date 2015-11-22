@@ -6,28 +6,11 @@ import com.sleepycat.db.DatabaseEntry;
 import com.sleepycat.db.DatabaseType;
 
 public class QueryRange {
-	public return_type name() {
-		
-	}
+	
 
 	public static void main(String args[]) {
 	try {
-		 
-	       //database configuration
 
-	       DatabaseConfig dbConfig = new DatabaseConfig();
-
-	       //dbConfig.setErrorStream(System.err);
-	       //dbConfig.setErrorPrefix("MyDbs");
-	 
-	       dbConfig.setType(DatabaseType.BTREE);
-	       dbConfig.setAllowCreate(false);
-	   
-	      //database 
-
-	      Database std_db = new Database("students.db", null, dbConfig);
-
-	      //DatabaseEntry key,data;
 
 	      DatabaseEntry key = new DatabaseEntry();
 	      DatabaseEntry data = new DatabaseEntry();
