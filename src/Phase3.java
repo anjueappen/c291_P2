@@ -58,7 +58,7 @@ public class Phase3 {
 
 	public ArrayList<String> parseInput(String query) {
 		String[] split_query = query.split("\\s+");
-		
+		ArrayList<String> results = new ArrayList<String>();
 		for (int i = 0;  i < split_query.length; ) {
 			String q  = split_query[i];
 			String q_type = qp.analyze(q);
@@ -70,7 +70,7 @@ public class Phase3 {
 					 * searchKey is the string to match, can be partial or full. The class
 					 * can figure that out. Just check if it ends with a %.
 					 */
-					query_search.retrieve(q.substring(0,1), q.substring(2));
+					results = query_search.retrieve(q.substring(0,1), q.substring(2), results);
 					break;
 				case "range":
 					/*
@@ -79,11 +79,11 @@ public class Phase3 {
 					 * operator can be '>' or '<'.
 					 * rangeKey can be a int or a date.
 					 */
-					query_range.retrieve(q, split_query[i+1], split_query[i+2]);
+					results = query_range.retrieve(q, split_query[i+1], split_query[i+2], results);
 					i += 2;
 					break;
 				case "searchKey":
-					query_search.retrieve("b", q);
+					results = query_search.retrieve("b", q, results);
 					break;
 				case "Error":
 					System.out.println("Something's wrong");
@@ -93,8 +93,7 @@ public class Phase3 {
 			}
 			i++;
 		}
-		return new ArrayList<String>(Arrays.asList(
-				"1", "2", "3"));	// this will be the review indices of the results of query
+		return results;
 	}
 	
 	public void createDatabases() {

@@ -2,6 +2,8 @@
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import com.sleepycat.db.Cursor;
 import com.sleepycat.db.Database;
 import com.sleepycat.db.DatabaseEntry;
@@ -32,14 +34,14 @@ public class QueryRange {
 		this.rw_db = rw_db;
 	}
 	
-	public void retrieve(String rangeType, String operator, String rangeKey) {
+	public ArrayList<String> retrieve(String rangeType, String operator, String rangeKey, ArrayList<String> subquery_results) {
 		System.out.println("rangeType = " + rangeType);
 		System.out.println("operator = " + operator);
 		System.out.println("rangeKey = " + rangeKey);
-		query(rangeType, operator, rangeKey);
+		return query(rangeType, operator, rangeKey);
 	}
 
-	public void query(String rangeType, String operator, String value) {
+	public ArrayList<String> query(String rangeType, String operator, String value) {
 		DatabaseEntry key = new DatabaseEntry();
 		key.setData(rangeType.getBytes());
 		key.setSize(rangeType.length());
@@ -97,6 +99,9 @@ public class QueryRange {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		return new ArrayList<String>(Arrays.asList(
+				"1", "2", "3"));
 	}
 
 
