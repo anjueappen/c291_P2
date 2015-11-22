@@ -1,19 +1,31 @@
+import java.io.FileNotFoundException;
 import java.util.Scanner;
+
+import com.sleepycat.db.Database;
+import com.sleepycat.db.DatabaseConfig;
+import com.sleepycat.db.DatabaseException;
+import com.sleepycat.db.DatabaseType;
+import com.sleepycat.db.Environment;
 
 public class Phase3 {
 	protected static Scanner input;
 	protected static Boolean polling;
 	protected QueryProcessor qp;
 	protected QuerySearch query_search;
-	protected QuerySearchRange query_range;
+	protected QueryRange query_range;
 	
-	
+	protected Database rw_db;
+	protected Database pt_db;
+	protected Database rt_db;
+	protected Database sc_db;
+
 	public Phase3() {
 		input = new Scanner(System.in);
 		polling = true; 
 		qp = new QueryProcessor();
 		query_search = new QuerySearch();
-		query_range = new QuerySearchRange();
+		query_range = new QueryRange(pt_db, rt_db, sc_db, rw_db);
+		createDatabases();
 	}
 	
 	public static void main(String[] args) {
@@ -75,6 +87,29 @@ public class Phase3 {
 					break;
 			}
 			i++;
+		}
+	}
+	
+	public void createDatabases() {
+		DatabaseConfig dbConfig= new DatabaseConfig();
+		DatabaseConfig rwConfig= new DatabaseConfig();
+		
+		//dbConfig.setSortedDuplicates(true); // to allow duplicate keys
+		dbConfig.setType(DatabaseType.BTREE); // sets storage type to BTree
+		dbConfig.setAllowCreate(true); // create a database if it doesn't exist
+		
+		rwConfig.setType(DatabaseType.HASH);
+		rwConfig.setSortedDuplicates(false); // to allow duplicate keys
+			
+		try {
+			rw_db = new Database("rw.idx", null, rwConfig);
+			pt_db = new Database("pt.idx", null, dbConfig);
+			rt_db = new Database("rt.idx", null, dbConfig);
+			sc_db = new Database("sc.idx", null, dbConfig);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (DatabaseException e) {
+			e.printStackTrace();
 		}
 	}
 }
