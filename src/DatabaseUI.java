@@ -61,10 +61,6 @@ public class DatabaseUI {
 				case 5:
 					notImplemented();
 					break;
-				case 6:
-					notImplemented();
-					break;
-					
 				default:
 					System.out.print("Please enter a number from the options given: ");;
 				}
