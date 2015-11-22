@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.sleepycat.db.*;
 
 public class FullMatchQuery{
-	/* futue implementation will involve this class
+	/* future implementation will involve this class
 	 * accessing databases which have already been created
 	 * (ie. not creating a new database for each query) 
 	 * 
