@@ -13,10 +13,11 @@ import com.sleepycat.db.LockMode;
 import com.sleepycat.db.OperationStatus;
 
 public class SetupDB {
-	Cursor pt_cursor;
-	Cursor rt_cursor;
-	Cursor sc_cursor;
-	Cursor rw_cursor;
+	//These are for the purposes of this class only
+	private Cursor pt_cursor;
+	private Cursor rt_cursor;
+	private Cursor sc_cursor;
+	private Cursor rw_cursor;
 
 
 	Database pt_db;
@@ -87,6 +88,10 @@ public class SetupDB {
 					foundData = new DatabaseEntry();
 				}
 			}
+			pt_cursor.close();
+			rt_cursor.close();
+			sc_cursor.close();
+			rw_cursor.close();
 
 
 		} catch (DatabaseException de) {

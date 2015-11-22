@@ -18,7 +18,7 @@ public class QueryExactMatch {
 		while(true) {
 			String searchKey;
 			System.out.print("Enter phrase to query by exact match[E to exit]:  ");
-			searchKey = user_input.next( );
+			searchKey = user_input.next();
 			if (searchKey.equals("E")) {
 				break;
 			}
