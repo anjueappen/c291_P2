@@ -24,7 +24,13 @@ public class FullMatchQuery{
 		dbConfig.setAllowCreate(true); // create a database if it doesn't exist
 		
 		Database std_db = null;
+		FullMatchQuery fmq = new FullMatchQuery(std_db);
+		fmq.parseMatchType();
 		
+	}
+	
+	/* Based on input, decides which method to call*/
+	public void parseMatchType(){
 		
 	}
 	
@@ -99,7 +105,9 @@ public class FullMatchQuery{
 		            String dataString = new String(theData.getData());
 		            System.out.println("Key | Data : " +  keyString + " | " + 
 		                               dataString + "");
-		   
+		            // add reviewId
+		            reviewIds.add(dataString);
+		            
 		            retVal = cursor.getNextDup(theKey, theData, LockMode.DEFAULT);
 		        }
 		    } else {	//only one value
@@ -120,5 +128,11 @@ public class FullMatchQuery{
 		String searchKey = key;
 	
 	}
-
+	
+	/* Display results of search
+	 * Use reviewIds to find the reviews to display.
+	 * Use Review class to format display.*/
+	public void displayResults(){
+		
+	}
 }
