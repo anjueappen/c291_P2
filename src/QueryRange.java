@@ -39,7 +39,7 @@ public class QueryRange {
 		query(rangeType, operator, rangeKey);
 	}
 
-	public void query(String rangeType, String operator, String value) {
+	public ArrayList<String> query(String rangeType, String operator, String value) {
 		DatabaseEntry key = new DatabaseEntry();
 		key.setData(rangeType.getBytes());
 		key.setSize(rangeType.length());
@@ -49,6 +49,7 @@ public class QueryRange {
 		data.setSize(value.length());
 
 		Cursor c; 
+		ArrayList<String> ids = new ArrayList<>(); 
 
 		try {
 			if(rangeType == "rscore"){
@@ -67,7 +68,7 @@ public class QueryRange {
 				c = rw_db.openCursor(null, null);  
 			}
 
-			ArrayList<String> ids = new ArrayList<>(); 
+			
 			if (c.getSearchKeyRange(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS)
 				if(operator == "<"){
 					//move cursor up to the value actually greater 
@@ -97,6 +98,7 @@ public class QueryRange {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return ids; 
 	}
 
 
