@@ -51,6 +51,7 @@ public class QueryRange {
 		data.setSize(value.length());
 
 		Cursor c; 
+		ArrayList<String> ids = new ArrayList<>(); 
 
 		try {
 			if(rangeType == "rscore"){
@@ -69,7 +70,7 @@ public class QueryRange {
 				c = rw_db.openCursor(null, null);  
 			}
 
-			ArrayList<String> ids = new ArrayList<>(); 
+			
 			if (c.getSearchKeyRange(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS)
 				if(operator == "<"){
 					//move cursor up to the value actually greater 
@@ -100,8 +101,7 @@ public class QueryRange {
 			e.printStackTrace();
 		}
 
-		return new ArrayList<String>(Arrays.asList(
-				"1", "2", "3"));
+		return ids; 
 	}
 
 
