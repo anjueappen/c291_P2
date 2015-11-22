@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 import com.sleepycat.db.*;
 
-Public class FullMatchQuery{
+public class FullMatchQuery{
 	
 	/* futue implementation will involve this class
 	 * accessing databases which have already been created
