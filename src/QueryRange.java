@@ -34,7 +34,7 @@ public class QueryRange {
 		System.out.println("rangeType = " + rangeType);
 		System.out.println("operator = " + operator);
 		System.out.println("rangeKey = " + rangeKey);
-		query(rangeType, operator, rangeKey);	
+		query(rangeType, operator, rangeKey);
 	}
 
 	public void query(String rangeType, String operator, String value) {
@@ -49,7 +49,7 @@ public class QueryRange {
 		Cursor c; 
 
 		try {
-			if(rangeType == "score"){
+			if(rangeType == "rscore"){
 				c = sc_db.openCursor(null, null); 
 			}else if (rangeType == "pprice" | rangeType == "rdate"){
 				c = rw_db.openCursor(null, null); 

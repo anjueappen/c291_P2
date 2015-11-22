@@ -5,7 +5,6 @@ import com.sleepycat.db.Database;
 import com.sleepycat.db.DatabaseConfig;
 import com.sleepycat.db.DatabaseException;
 import com.sleepycat.db.DatabaseType;
-import com.sleepycat.db.Environment;
 
 public class Phase3 {
 	protected static Scanner input;
