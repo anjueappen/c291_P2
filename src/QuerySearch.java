@@ -89,7 +89,6 @@ public class QuerySearch {
 				        System.out.println("Key | Data : " +  keyString + " | " + 
 				                               dataString + "");
 				        results.add(dataString);
-				        System.out.println("sing "+ dataString);
 		    		}
 		    		
 				}

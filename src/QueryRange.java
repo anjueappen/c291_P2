@@ -54,11 +54,11 @@ public class QueryRange {
 		ArrayList<String> ids = new ArrayList<>(); 
 
 		try {
-			if(rangeType == "rscore"){
+			if(rangeType.equals("rscore")){
 				c = sc_db.openCursor(null, null); 
-			}else if (rangeType == "pprice" ){
+			}else if (rangeType.equals("pprice") ){
 				c = rw_db.openCursor(null, null); 
-			}else if(rangeType == "rdate"){
+			}else if(rangeType.equals("rdate")){
 				c = rw_db.openCursor(null, null); 
 				SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
 				String date = String.valueOf(((Date) fmt.parse(value)).getTime()); 
@@ -72,7 +72,7 @@ public class QueryRange {
 
 			
 			if (c.getSearchKeyRange(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS)
-				if(operator == "<"){
+				if(operator.equals("<")){
 					//move cursor up to the value actually greater 
 
 					if(c.getPrevNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
@@ -82,7 +82,7 @@ public class QueryRange {
 					while(c.getPrev(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
 						ids.add(new String(key.getData())); 
 					}
-				}else if(operator == ">"){
+				}else if(operator.equals(">")){
 					//move cursor down to the value actually greater 
 					if(c.getNextNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
 						ids.add(new String(key.getData())); 

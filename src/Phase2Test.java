@@ -76,6 +76,92 @@ public class Phase2Test {
 		 * Accessed November 16, 2015
 		 * Working with duplicate objects
 		 */
+		
+		/**
+		 * TESTING PARTIAL MATCHES
+		 */
+		Scanner user_input = new Scanner( System.in );
+		while(true) {
+			String searchKey;
+			System.out.print("What would you like to search for? [E to exit]:  ");
+			searchKey = user_input.next( );
+			if (searchKey.equals("E")) {
+			    break;
+			}
+			try {
+			    // Create DatabaseEntry objects
+			    // searchKey is some String.
+			    DatabaseEntry theKey = new DatabaseEntry(searchKey.getBytes("UTF-8"));
+			    DatabaseEntry theData = new DatabaseEntry();
+
+			    // Open a cursor using a database handle
+			    cursor = std_db.openCursor(null, null);
+
+			    // Position the cursor
+			    // Ignoring the return value for clarity
+			    OperationStatus retVal = cursor.getSearchKeyRange(theKey, theData, 
+			                                                 LockMode.DEFAULT);
+			    
+			    // Count the number of duplicates. If the count is greater than 1, 
+			    // print the duplicates.
+			    if (cursor.count() > 1) {
+			    	System.out.println("Cursor count: " + cursor.count());
+			        while (retVal == OperationStatus.SUCCESS) {
+			            String keyString = new String(theKey.getData());
+			            String dataString = new String(theData.getData());
+			            System.out.println("Key | Data : " +  keyString + " | " + 
+			                               dataString + "");
+			   
+			            retVal = cursor.getNextDup(theKey, theData, LockMode.DEFAULT);
+			        }
+			    } else {	//only one value
+			    	String keyString = new String(theKey.getData());
+		            String dataString = new String(theData.getData());
+		            System.out.println("Key | Data : " +  keyString + " | " + 
+		                               dataString + "");
+			    }
+			    
+			    theKey = new DatabaseEntry();
+	            theData = new DatabaseEntry();
+	            
+			    // move cursor forward
+		    	retVal = cursor.getNext(theKey, theData, LockMode.DEFAULT);
+			    while (retVal == OperationStatus.SUCCESS) {
+			    	String keyString = new String(theKey.getData());
+		            String dataString = new String(theData.getData());
+		            
+		            if (keyString.startsWith(searchKey)) {
+		            	 if (cursor.count() > 1) {
+		 			    	System.out.println("Cursor count: " + cursor.count());
+		 			        while (retVal == OperationStatus.SUCCESS) {
+		 			            keyString = new String(theKey.getData());
+		 			            dataString = new String(theData.getData());
+		 			            System.out.println("Key | Data : " +  keyString + " | " + dataString + "");
+		 			            retVal = cursor.getNextDup(theKey, theData, LockMode.DEFAULT);
+		 			        }
+		            	 } else {	// only one value
+		 			    	keyString = new String(theKey.getData());
+		 		            dataString = new String(theData.getData());
+		 		            System.out.println("Key | Data : " +  keyString + " | " +  dataString + "");
+		 			    }
+		            } // done with all partial matches
+		            else {
+		            	break;
+		            }
+		            theKey = new DatabaseEntry();
+		            theData = new DatabaseEntry();
+		            retVal = cursor.getNext(theKey, theData, LockMode.DEFAULT);
+			    }
+			    // Make sure to close the cursor
+			} catch (Exception e) {
+			    // Exception handling goes here
+			} 
+		}
+		
+		
+		
+		
+		/*
 		Scanner user_input = new Scanner( System.in );
 		while(true) {
 			String searchKey;
@@ -121,6 +207,7 @@ public class Phase2Test {
 			    // Exception handling goes here
 			} 
 		}
+		*/
 
 		user_input.close();
 		try {
