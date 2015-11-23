@@ -80,6 +80,7 @@ public class Phase3 {
 					 * rangeKey can be a int or a date.
 					 */
 					results = query_range.retrieve(q, split_query[i+1], split_query[i+2], results);
+					//System.out.println("Split 2: " + split_query[i+2]);
 					i += 2;
 					break;
 				case "searchKey":
