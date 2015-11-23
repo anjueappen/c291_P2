@@ -21,6 +21,14 @@ public class QuerySearch {
 		System.out.println("searchType = " + searchType);
 		System.out.println("searchKey = " + searchKey);
 		
+		if (searchKey.endsWith("%")) {
+			return partialMatchQuery(searchType, searchKey.substring(0, searchKey.length()-1), subquery_results);
+		}
+		return query(searchType, searchKey, subquery_results);
+	}
+	
+	public ArrayList<String> query(String searchType, String searchKey, ArrayList<String> subquery_results) {
+		
 		ArrayList<String> results = new ArrayList<String>();
 		Database std_db;
 		Cursor cursor;
@@ -64,7 +72,9 @@ public class QuerySearch {
 			                               dataString + "");
 			   
 			            retVal = cursor.getNextDup(theKey, theData, LockMode.DEFAULT);
-			            results.add(dataString);
+			            if (!results.contains(dataString)) {
+			            	results.add(dataString);
+			            }
 			            System.out.println("dup "+ dataString);
 			        }
 			    } else {	//only one value
@@ -72,7 +82,9 @@ public class QuerySearch {
 		            String dataString = new String(theData.getData());
 		            System.out.println("Key | Data : " +  keyString + " | " + 
 		                               dataString + "");
-		            results.add(dataString);
+		            if (!results.contains(dataString)) {
+		            	results.add(dataString);
+		            }
 			    }
 			    // Make sure to close the cursor
 			}  //end if
@@ -88,7 +100,9 @@ public class QuerySearch {
 				        String dataString = new String(theData.getData());
 				        System.out.println("Key | Data : " +  keyString + " | " + 
 				                               dataString + "");
-				        results.add(dataString);
+				        if (!results.contains(dataString)) {
+			            	results.add(dataString);
+			            }
 		    		}
 		    		
 				}
@@ -102,5 +116,109 @@ public class QuerySearch {
 		return results;
 	}
 	
+	public ArrayList<String> partialMatchQuery(String searchType, String searchKey, ArrayList<String> subquery_results) {
+		System.out.println("Partial match query!");
+		System.out.println("searchType = " + searchType);
+		System.out.println("searchKey = " + searchKey);
+		Cursor cursor = null;
+		Database std_db;
+		ArrayList<String> results = new ArrayList<String>();
+		
+		if (searchType.equals("p")) {
+	    	std_db = pt_db;
+	    } else {
+	    	std_db = rt_db;
+	    }
+		try {
+		    // Create DatabaseEntry objects
+		    // searchKey is some String.
+		    DatabaseEntry theKey = new DatabaseEntry(searchKey.getBytes("UTF-8"));
+		    DatabaseEntry theData = new DatabaseEntry();
+
+		    // Open a cursor using a database handle
+		    cursor = std_db.openCursor(null, null);
+
+		    // Position the cursor
+		    // Ignoring the return value for clarity
+		    OperationStatus retVal = cursor.getSearchKeyRange(theKey, theData, 
+		                                                 LockMode.DEFAULT);
+		    
+		    if (subquery_results.size() == 0) {
+		    	// Count the number of duplicates. If the count is greater than 1, 
+			    // print the duplicates.
+			    if (cursor.count() > 1) {
+			    	System.out.println("Cursor count: " + cursor.count());
+			        while (retVal == OperationStatus.SUCCESS) {
+			            String keyString = new String(theKey.getData());
+			            String dataString = new String(theData.getData());
+			            System.out.println("Key | Data : " +  keyString + " | " + 
+			                               dataString + "");
+			            if (!results.contains(dataString)) {
+			            	results.add(dataString);
+			            }
+			            retVal = cursor.getNextDup(theKey, theData, LockMode.DEFAULT);
+			        }
+			    } else {	//only one value
+			    	String keyString = new String(theKey.getData());
+		            String dataString = new String(theData.getData());
+		            System.out.println("Key | Data : " +  keyString + " | " + 
+		                               dataString + "");			            
+		            if (!results.contains(dataString)) {
+		            	results.add(dataString);
+		            }
+
+			    }
+			    
+			    theKey = new DatabaseEntry();
+	            theData = new DatabaseEntry();
+	            
+			    // move cursor forward
+		    	retVal = cursor.getNext(theKey, theData, LockMode.DEFAULT);
+			    while (retVal == OperationStatus.SUCCESS) {
+			    	String keyString = new String(theKey.getData());
+		            String dataString = new String(theData.getData());
+		            
+		            if (keyString.startsWith(searchKey)) {
+		            	 if (cursor.count() > 1) {
+		 			    	System.out.println("Cursor count: " + cursor.count());
+		 			        while (retVal == OperationStatus.SUCCESS) {
+		 			            keyString = new String(theKey.getData());
+		 			            dataString = new String(theData.getData());
+		 			            System.out.println("Key | Data : " +  keyString + " | " + dataString + "");
+		 			           if (!results.contains(dataString)) {
+					            	results.add(dataString);
+					            }
+		 			            retVal = cursor.getNextDup(theKey, theData, LockMode.DEFAULT);
+		 			        }
+		            	 } else {	// only one value
+		 			    	keyString = new String(theKey.getData());
+		 		            dataString = new String(theData.getData());
+		 		           if (!results.contains(dataString)) {
+				            	results.add(dataString);
+				            }
+		 		            System.out.println("Key | Data : " +  keyString + " | " +  dataString + "");
+		 			    }
+		            } // done with all partial matches
+		            else {
+		            	break;
+		            }
+		            theKey = new DatabaseEntry();
+		            theData = new DatabaseEntry();
+		            retVal = cursor.getNext(theKey, theData, LockMode.DEFAULT);
+			    } // first subquery
+			
+		    } 
+		    // subquery, so use getSearchBoth
+		    else {
+		    	System.out.println("There was a previous subquery! TOBEIMPLEMENTED");
+		    }
+		    
+		    // Make sure to close the cursor
+		} catch (Exception e) {
+		    // Exception handling goes here
+		} 
+		
+		return results;
+	}	// end of partial match result function
 	
 }

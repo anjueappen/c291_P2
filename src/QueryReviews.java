@@ -52,9 +52,13 @@ public class QueryReviews {
 	}
 	
 	public void printData(String[] values) {
-		String[] fields = {"product_id", "product_title", "product_price", "userid", 
+		/*String[] fields = {"product_id", "product_title", "product_price", "userid", 
 				"profile_name", "helpfulness", "review_score", "review_timestamp",
 				"summary", "full_text"};
+		*/
+		// TODO: add the above instead of below. just decided to not print summary and full text so that output is easier to read
+		String[] fields = {"product_id", "product_title", "product_price", "userid", 
+				"profile_name", "helpfulness", "review_score", "review_timestamp"};
 		for (int i = 0; i < fields.length; i++) {
 			System.out.println(fields[i] + ": " + values[i]);
 		}
