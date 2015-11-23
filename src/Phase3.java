@@ -55,7 +55,7 @@ public class Phase3 {
 		}
 		
 	}
-
+	// TODO go back and make case insensitive
 	public ArrayList<String> parseInput(String query) {
 		String[] split_query = query.split("\\s+");
 		ArrayList<String> results = new ArrayList<String>();
@@ -70,7 +70,7 @@ public class Phase3 {
 					 * searchKey is the string to match, can be partial or full. The class
 					 * can figure that out. Just check if it ends with a %.
 					 */
-					results = query_search.retrieve(q.substring(0,1), q.substring(2), results);
+					results = query_search.retrieve(q.substring(0,1), q.substring(2).toLowerCase(), results);
 					break;
 				case "range":
 					i += 2;

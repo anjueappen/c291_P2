@@ -131,23 +131,23 @@ public class QueryRange {
 
 
 	public Long getRDate(String review) {
-		String[] peices = review.split(",");
-		if(peices[8].equals("unknown")){
+		String[] pieces = review.split(",");
+		if(pieces[8].equals("unknown")){
 			return (long) -1; 
 		}
-		return Long.parseLong(peices[8]);  
+		return Long.parseLong(pieces[8]);  
 	}
 
 	public Double getPPrice(String review){
-		String[] peices = review.split(",");
-		if(peices[3].equals("unknown")){
+		String[] pieces = review.split(",");
+		if(pieces[3].equals("unknown")){
 			return (double) -1; 
 		}
-		return Double.parseDouble(peices[3]);
+		return Double.parseDouble(pieces[3]);
 	}
 	public String getID(String review){
-		String[] peices = review.split(",");
-		return peices[0];
+		String[] pieces = review.split(",");
+		return pieces[0];
 	}
 
 

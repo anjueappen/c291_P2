@@ -1,9 +1,5 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.stream.events.StartDocument;
 
 public class QueryProcessor {
 
@@ -29,6 +25,7 @@ public class QueryProcessor {
 	}
 
 	public String analyze(String query) {
+		//query.toLowerCase();  // TODO haven't dealt with range yet
 		if(query.contains("p:") | query.contains("r:")) {
 			return "search";
 		}
