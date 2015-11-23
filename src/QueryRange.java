@@ -84,8 +84,12 @@ public class QueryRange {
 			 * PPRICE
 			 */
 			else if (rangeType.equals("pprice") ){
+				System.out.println("PRICE CHECK!");
 				c = rw_db.openCursor(null, null); 
+				
+				// first subquery!
 				if (subquery_results.size() == 0) {
+					System.out.println("FIRST SUBQUERY");
 					DatabaseEntry foundKey = new DatabaseEntry();
 					DatabaseEntry foundData = new DatabaseEntry();
 					
@@ -111,19 +115,26 @@ public class QueryRange {
 					return ids;
 				}
 				
-				for(String id: subquery_results){
-					key.setData(id.getBytes());
-					key.setSize(id.length());
-					c.getSearchKeyRange(key, data, LockMode.DEFAULT);  //get the full review 
-					Double price = getPPrice(new String(data.getData()));
-					// price is null if pprice is "unknown"
-					if (price != null) {
-						if(operator.equals(">") && price > Double.parseDouble(value)){
-							ids.add(id); 
-						}else if(operator.equals("<") && price < Double.parseDouble(value)){
-							ids.add(id); 
+				else {
+					System.out.println("GOT PREVIOUS SUBQUERY RESULTS");
+					for(String id: subquery_results){
+						System.out.println("ID:" + id);
+						key = new DatabaseEntry(id.getBytes("UTF-8"));
+						data = new DatabaseEntry(id.getBytes("UTF-8"));	
+						if (c.getSearchKey(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+							Double price = getPPrice(new String(data.getData()));
+							// price is null if pprice is "unknown"
+							if (price != null) {
+								if(operator.equals(">") && price > Double.parseDouble(value)){
+									ids.add(id); 
+								}else if(operator.equals("<") && price < Double.parseDouble(value)){
+									ids.add(id); 
+								}
+							}
 						}
 					}
+					
+					return ids;
 				}
 
 			}
@@ -185,7 +196,7 @@ public class QueryRange {
 		return Double.parseDouble(pieces[2]);
 	}
 	public String getID(String review){
-		String[] pieces = review.split(",");
+		String[] pieces = review.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 		return pieces[0];
 	}
 

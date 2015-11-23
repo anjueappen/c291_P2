@@ -21,7 +21,7 @@ public class QueryReviews {
 				// Create DatabaseEntry objects
 				// searchKey is some String.
 				DatabaseEntry theKey = new DatabaseEntry(searchKey.getBytes("UTF-8"));
-				DatabaseEntry theData = new DatabaseEntry();
+				DatabaseEntry theData = new DatabaseEntry(searchKey.getBytes("UTF-8"));
 
 				// Open a cursor using a database handle
 				cursor = rw_db.openCursor(null, null);
@@ -59,6 +59,8 @@ public class QueryReviews {
 		// TODO: add the above instead of below. just decided to not print summary and full text so that output is easier to read
 		String[] fields = {"product_id", "product_title", "product_price", "userid", 
 				"profile_name", "helpfulness", "review_score", "review_timestamp"};
+			
+				
 		for (int i = 0; i < fields.length; i++) {
 			System.out.println(fields[i] + ": " + values[i]);
 		}
