@@ -50,12 +50,14 @@ public class QueryRange {
 
 			if(rangeType.equals("rscore")){
 				// keys of scores database are in the form of i.0 where i is an integer
+				System.out.println("rscore");
 				value = value.concat(".0");
+				key = new DatabaseEntry(value.getBytes("UTF-8"));	// changed value so we need to change again
 				c = sc_db.openCursor(null, null); 
 			}else if (rangeType.equals("pprice") ){
 				c = rw_db.openCursor(null, null); 
 				value = value.concat(".00"); 
-
+				key = new DatabaseEntry(value.getBytes("UTF-8"));
 				for(String id: subquery_results){
 					key.setData(id.getBytes());
 					key.setSize(id.length());
@@ -90,6 +92,7 @@ public class QueryRange {
 				c = rw_db.openCursor(null, null);  
 			}	
 			
+			System.out.println("about to search for rscore records");
 			if (c.getSearchKey(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
 				System.out.println("getSearchKey function");
 				if(operator.equals("<")){
