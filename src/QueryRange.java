@@ -56,8 +56,8 @@ public class QueryRange {
 				value = value.concat(".0");
 				key = new DatabaseEntry(value.getBytes("UTF-8"));	// changed value so we need to change again
 				c = sc_db.openCursor(null, null); 
-				
-				if (c.getSearchKey(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+				System.out.println("rscore: " + value);
+				if (c.getSearchKeyRange(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
 					if(operator.equals("<")){
 						//move cursor up to the value actually greater 
 
@@ -78,6 +78,8 @@ public class QueryRange {
 						}
 					}
 				} 
+				c.close();
+				return ids;
 			}
 			
 			/**
@@ -111,7 +113,7 @@ public class QueryRange {
 						foundKey = new DatabaseEntry();
 						foundData = new DatabaseEntry();
 					}
-					
+					c.close();
 					return ids;
 				}
 				
@@ -133,7 +135,7 @@ public class QueryRange {
 							}
 						}
 					}
-					
+					c.close();
 					return ids;
 				}
 
@@ -163,6 +165,7 @@ public class QueryRange {
 			}else{
 				System.out.println("Range queries can only occur for score, product price (pprice) or review date (rdate)."); 
 				c = rw_db.openCursor(null, null);  
+				c.close();
 			}	
 			
 			c.close();
