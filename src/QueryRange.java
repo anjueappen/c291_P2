@@ -57,29 +57,54 @@ public class QueryRange {
 				key = new DatabaseEntry(value.getBytes("UTF-8"));	// changed value so we need to change again
 				c = sc_db.openCursor(null, null); 
 				System.out.println("rscore: " + value);
-				if (c.getSearchKeyRange(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-					if(operator.equals("<")){
-						//move cursor up to the value actually greater 
+				if (subquery_results.size() == 0) {
+					if (c.getSearchKeyRange(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+						if(operator.equals("<")){
+							//move cursor up to the value actually greater 
 
-						if(c.getPrevNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-							ids.add(new String(data.getData())); 
-						}
+							if(c.getPrevNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+								ids.add(new String(data.getData())); 
+							}
 
-						while(c.getPrev(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-							ids.add(new String(data.getData())); 
+							while(c.getPrev(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+								ids.add(new String(data.getData())); 
+							}
+						}else if(operator.equals(">")){
+							//move cursor down to the value actually greater 
+							if(c.getNextNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+								ids.add(new String(data.getData())); 
+							}
+							while(c.getNext(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+								ids.add(new String(data.getData())); 
+							}
 						}
-					}else if(operator.equals(">")){
-						//move cursor down to the value actually greater 
-						if(c.getNextNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-							ids.add(new String(data.getData())); 
-						}
-						while(c.getNext(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-							ids.add(new String(data.getData())); 
+					} 
+					c.close();
+					return ids;
+				}
+				
+				else {
+					System.out.println("GOT PREVIOUS SUBQUERY RESULTS");
+					for(String id: subquery_results){
+						System.out.println("ID:" + id);
+						key = new DatabaseEntry(id.getBytes("UTF-8"));
+						data = new DatabaseEntry(id.getBytes("UTF-8"));	
+						if (c.getSearchKey(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+							Double price = getPPrice(new String(data.getData()));
+							// price is null if pprice is "unknown"
+							if (price != null) {
+								if(operator.equals(">") && price > Double.parseDouble(value)){
+									ids.add(id); 
+								}else if(operator.equals("<") && price < Double.parseDouble(value)){
+									ids.add(id); 
+								}
+							}
 						}
 					}
-				} 
-				c.close();
-				return ids;
+					c.close();
+					return ids;
+				}
+				
 			}
 			
 			/**
