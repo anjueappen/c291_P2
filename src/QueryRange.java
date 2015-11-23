@@ -42,9 +42,6 @@ public class QueryRange {
 	}
 
 	public ArrayList<String> query(String rangeType, String operator, String value, ArrayList<String> subquery_results) {
-		// keys of scores database are in the form of i.0 where i is an integer
-		value = value.concat(".0");
-		
 		Cursor c; 
 		ArrayList<String> ids = new ArrayList<>(); 
 
@@ -53,6 +50,8 @@ public class QueryRange {
 			DatabaseEntry data = new DatabaseEntry();
 			
 			if(rangeType.equals("rscore")){
+				// keys of scores database are in the form of i.0 where i is an integer
+				value = value.concat(".0");
 				c = sc_db.openCursor(null, null); 
 			}else if (rangeType.equals("pprice") ){
 				c = rw_db.openCursor(null, null); 
