@@ -84,18 +84,19 @@ public class Phase2Test {
 			if (searchKey.equals("E")) {
 			    break;
 			}
+			String dataKey = "4";
 			try {
 			    // Create DatabaseEntry objects
 			    // searchKey is some String.
 			    DatabaseEntry theKey = new DatabaseEntry(searchKey.getBytes("UTF-8"));
-			    DatabaseEntry theData = new DatabaseEntry();
+			    DatabaseEntry theData = new DatabaseEntry(dataKey.getBytes("UTF-8"));
 
 			    // Open a cursor using a database handle
 			    cursor = std_db.openCursor(null, null);
 
 			    // Position the cursor
 			    // Ignoring the return value for clarity
-			    OperationStatus retVal = cursor.getSearchKey(theKey, theData, 
+			    OperationStatus retVal = cursor.getSearchBoth(theKey, theData, 
 			                                                 LockMode.DEFAULT);
 			    
 			    // Count the number of duplicates. If the count is greater than 1, 

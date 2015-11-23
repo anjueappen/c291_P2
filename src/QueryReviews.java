@@ -15,6 +15,7 @@ public class QueryReviews {
 	
 	public void getReviews(ArrayList<String> indices) {
 		Cursor cursor = null;
+		System.out.println("THESE ARE THE RESULTS OF YOUR QUERY: ");
 		for (String searchKey: indices) {
 			try {
 				// Create DatabaseEntry objects
