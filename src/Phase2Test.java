@@ -241,7 +241,7 @@ public class Phase2Test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+	*/
 	}
 	
 }
