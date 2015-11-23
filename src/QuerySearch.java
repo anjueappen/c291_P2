@@ -54,8 +54,9 @@ public class QuerySearch {
 		    			pResults.add(id);
 		    		}
 		    	}
-		    	
-		    	return (ArrayList<String>)Collections.sort(pResults);
+		    	// TODO Kirsten needs to sort and check optimization
+		    	// TODO delete this. this change should have gone through
+		    	return pResults;
 		    }
 		    
 		    System.out.println("Database name being used: " + std_db.getDatabaseName());
