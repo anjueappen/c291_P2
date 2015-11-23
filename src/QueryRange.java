@@ -38,22 +38,20 @@ public class QueryRange {
 		System.out.println("rangeType = " + rangeType);
 		System.out.println("operator = " + operator);
 		System.out.println("rangeKey = " + rangeKey);
-		return query(rangeType, operator, rangeKey);
+		return query(rangeType, operator, rangeKey, subquery_results);
 	}
 
-	public ArrayList<String> query(String rangeType, String operator, String value) {
-		DatabaseEntry key = new DatabaseEntry();
-		key.setData(rangeType.getBytes());
-		key.setSize(rangeType.length());
-
-		DatabaseEntry data = new DatabaseEntry();
-		data.setData(value.getBytes());
-		data.setSize(value.length());
-
+	public ArrayList<String> query(String rangeType, String operator, String value, ArrayList<String> subquery_results) {
+		// keys of scores database are in the form of i.0 where i is an integer
+		value = value.concat(".0");
+		
 		Cursor c; 
 		ArrayList<String> ids = new ArrayList<>(); 
 
 		try {
+			DatabaseEntry key = new DatabaseEntry(value.getBytes("UTF-8"));
+			DatabaseEntry data = new DatabaseEntry();
+			
 			if(rangeType.equals("rscore")){
 				c = sc_db.openCursor(null, null); 
 			}else if (rangeType.equals("pprice") ){
@@ -68,31 +66,34 @@ public class QueryRange {
 			}else{
 				System.out.println("Range queries can only occur for score, product price (pprice) or review date (rdate)."); 
 				c = rw_db.openCursor(null, null);  
-			}
-
+			}	
 			
-			if (c.getSearchKeyRange(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS)
+			if (c.getSearchKey(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+				System.out.println("getSearchKey function");
 				if(operator.equals("<")){
 					//move cursor up to the value actually greater 
 
 					if(c.getPrevNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-						ids.add(new String(key.getData())); 
+						ids.add(new String(data.getData())); 
 					}
 
 					while(c.getPrev(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-						ids.add(new String(key.getData())); 
+						ids.add(new String(data.getData())); 
 					}
 				}else if(operator.equals(">")){
 					//move cursor down to the value actually greater 
 					if(c.getNextNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-						ids.add(new String(key.getData())); 
+						ids.add(new String(data.getData())); 
 					}
 					while(c.getNext(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-						ids.add(new String(key.getData())); 
+						ids.add(new String(data.getData())); 
 					}
 				}
+			} else {
+				
+			}
 			c.close();
-			
+
 		} catch (DatabaseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,5 +1,8 @@
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.sleepycat.db.*;
 
@@ -71,6 +74,13 @@ public class Phase2Test {
 		}
 		
 		
+		
+		
+		
+		
+		
+		
+		
 		/**	
 		 * http://download.oracle.com/berkeley-db/docs/je/1.5.3/GettingStartedGuide/Positioning.html
 		 * Accessed November 16, 2015
@@ -80,6 +90,7 @@ public class Phase2Test {
 		/**
 		 * TESTING PARTIAL MATCHES
 		 */
+		
 		Scanner user_input = new Scanner( System.in );
 		while(true) {
 			String searchKey;
@@ -220,7 +231,7 @@ public class Phase2Test {
 			    // Exception handling goes here
 			} 
 		}
-		*/
+		
 
 		user_input.close();
 		try {
