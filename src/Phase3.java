@@ -91,6 +91,7 @@ public class Phase3 {
 			String q  = split_query[i];
 			String q_type = qp.analyze(q);
 			if (q_type.equals("range")) {
+				System.out.println("Range query.");
 					/*
 					 * TODO: QuerySearchRange will take in arguments rangeType, operator and rangeKey.
 					 * rangeType can be 'rscore', 'pprice' or 'rdate'.

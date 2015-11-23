@@ -48,29 +48,91 @@ public class QueryRange {
 			DatabaseEntry key = new DatabaseEntry(value.getBytes("UTF-8"));
 			DatabaseEntry data = new DatabaseEntry();
 
+			/**
+			 * RSCORE
+			 */
 			if(rangeType.equals("rscore")){
 				// keys of scores database are in the form of i.0 where i is an integer
-				System.out.println("rscore");
 				value = value.concat(".0");
 				key = new DatabaseEntry(value.getBytes("UTF-8"));	// changed value so we need to change again
 				c = sc_db.openCursor(null, null); 
-			}else if (rangeType.equals("pprice") ){
+				
+				if (c.getSearchKey(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+					if(operator.equals("<")){
+						//move cursor up to the value actually greater 
+
+						if(c.getPrevNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+							ids.add(new String(data.getData())); 
+						}
+
+						while(c.getPrev(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+							ids.add(new String(data.getData())); 
+						}
+					}else if(operator.equals(">")){
+						//move cursor down to the value actually greater 
+						if(c.getNextNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+							ids.add(new String(data.getData())); 
+						}
+						while(c.getNext(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+							ids.add(new String(data.getData())); 
+						}
+					}
+				} 
+			}
+			
+			/**
+			 * PPRICE
+			 */
+			else if (rangeType.equals("pprice") ){
 				c = rw_db.openCursor(null, null); 
-				value = value.concat(".00"); 
-				key = new DatabaseEntry(value.getBytes("UTF-8"));
+				if (subquery_results.size() == 0) {
+					DatabaseEntry foundKey = new DatabaseEntry();
+					DatabaseEntry foundData = new DatabaseEntry();
+					
+					// we need to just iterate through ALL the reviews and compare pprice
+					while (c.getNext(foundKey, foundData, LockMode.DEFAULT) ==
+							OperationStatus.SUCCESS) {
+						String keyString = new String(foundKey.getData());
+
+						Double price = getPPrice(new String(foundData.getData())); 
+						
+						if (price != null) {
+							if(operator.equals(">") && price > Double.parseDouble(value)){
+								ids.add(keyString); 
+							}else if(operator.equals("<") && price < Double.parseDouble(value)){
+								ids.add(keyString); 
+							}
+						}
+						
+						foundKey = new DatabaseEntry();
+						foundData = new DatabaseEntry();
+					}
+					
+					return ids;
+				}
+				
 				for(String id: subquery_results){
 					key.setData(id.getBytes());
 					key.setSize(id.length());
-					c.getSearchKey(key, data, LockMode.DEFAULT);  //get the full review 
-					Double price = getPPrice(new String(data.getData())); 
-					if(operator.equals(">") && price > Double.parseDouble(value)){
-						ids.add(id); 
-					}else if(operator.equals("<") && price < Double.parseDouble(value)){
-						ids.add(id); 
+					c.getSearchKeyRange(key, data, LockMode.DEFAULT);  //get the full review 
+					Double price = getPPrice(new String(data.getData()));
+					// price is null if pprice is "unknown"
+					if (price != null) {
+						if(operator.equals(">") && price > Double.parseDouble(value)){
+							ids.add(id); 
+						}else if(operator.equals("<") && price < Double.parseDouble(value)){
+							ids.add(id); 
+						}
 					}
 				}
 
-			}else if(rangeType.equals("rdate")){
+			}
+
+			/**
+			 * RDATE
+			 */
+			
+			else if(rangeType.equals("rdate")){
 				c = rw_db.openCursor(null, null); 
 				SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
 				Long date = ((Date) fmt.parse(value)).getTime(); 
@@ -92,31 +154,6 @@ public class QueryRange {
 				c = rw_db.openCursor(null, null);  
 			}	
 			
-			System.out.println("about to search for rscore records");
-			if (c.getSearchKey(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-				System.out.println("getSearchKey function");
-				if(operator.equals("<")){
-					//move cursor up to the value actually greater 
-
-					if(c.getPrevNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-						ids.add(new String(data.getData())); 
-					}
-
-					while(c.getPrev(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-						ids.add(new String(data.getData())); 
-					}
-				}else if(operator.equals(">")){
-					//move cursor down to the value actually greater 
-					if(c.getNextNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-						ids.add(new String(data.getData())); 
-					}
-					while(c.getNext(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-						ids.add(new String(data.getData())); 
-					}
-				}
-			} else {
-				
-			}
 			c.close();
 		} catch (DatabaseException e) {
 			// TODO Auto-generated catch block
@@ -131,7 +168,8 @@ public class QueryRange {
 
 
 	public Long getRDate(String review) {
-		String[] pieces = review.split(",");
+		// split by comma except for if inside quotations
+		String[] pieces = review.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 		if(pieces[8].equals("unknown")){
 			return (long) -1; 
 		}
@@ -139,11 +177,12 @@ public class QueryRange {
 	}
 
 	public Double getPPrice(String review){
-		String[] pieces = review.split(",");
-		if(pieces[3].equals("unknown")){
-			return (double) -1; 
+		// split by comma except for if inside quotations
+		String[] pieces = review.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+		if(pieces[2].contains("unknown")) {
+			return null; 
 		}
-		return Double.parseDouble(pieces[3]);
+		return Double.parseDouble(pieces[2]);
 	}
 	public String getID(String review){
 		String[] pieces = review.split(",");
