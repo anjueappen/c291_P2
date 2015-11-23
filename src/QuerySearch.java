@@ -7,7 +7,7 @@ import com.sleepycat.db.LockMode;
 import com.sleepycat.db.OperationStatus;
 
 public class QuerySearch {
-	
+
 	Database pt_db;
 	Database rt_db;
 
@@ -30,7 +30,7 @@ public class QuerySearch {
 	public ArrayList<String> query(String searchType, String searchKey, ArrayList<String> subquery_results) {
 		
 		ArrayList<String> results = new ArrayList<String>();
-		Database std_db;
+		Database std_db = null;
 		Cursor cursor;
 		try {
 		    // Create DatabaseEntry objects
@@ -40,8 +40,20 @@ public class QuerySearch {
 		    
 		    if (searchType.equals("p")) {
 		    	std_db = pt_db;
-		    } else {
+		    } else if (searchType.equals("r")){
 		    	std_db = rt_db;
+		    }else{ // b
+		    	// implement
+		    	ArrayList<String> pResults = query("p", searchKey, subquery_results);
+		    	ArrayList<String> rResults = query("r", searchKey, subquery_results);
+		    	
+		    	// get the final results, merge but no duplicates
+		    	for(String id : rResults){
+		    		if (!pResults.contains(id)){
+		    			pResults.add(id);
+		    		}
+		    	}
+		    	
 		    }
 		    
 		    System.out.println("Database name being used: " + std_db.getDatabaseName());
@@ -121,13 +133,15 @@ public class QuerySearch {
 		System.out.println("searchType = " + searchType);
 		System.out.println("searchKey = " + searchKey);
 		Cursor cursor = null;
-		Database std_db;
+		Database std_db = null;
 		ArrayList<String> results = new ArrayList<String>();
 		
 		if (searchType.equals("p")) {
 	    	std_db = pt_db;
-	    } else {
+	    } else if (searchType.equals("r")){
 	    	std_db = rt_db;
+	    }else{//b
+	    	// implement
 	    }
 		try {
 		    // Create DatabaseEntry objects
