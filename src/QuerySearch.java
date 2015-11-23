@@ -143,7 +143,7 @@ public class QuerySearch {
 		    OperationStatus retVal = cursor.getSearchKeyRange(theKey, theData, 
 		                                                 LockMode.DEFAULT);
 		    
-		    if (subquery_results.size() == 0) {
+		     
 		    	// Count the number of duplicates. If the count is greater than 1, 
 			    // print the duplicates.
 			    if (cursor.count() > 1) {
@@ -207,10 +207,11 @@ public class QuerySearch {
 		            retVal = cursor.getNext(theKey, theData, LockMode.DEFAULT);
 			    } // first subquery
 			
-		    } 
+		    
 		    // subquery, so use getSearchBoth
-		    else {
-		    	System.out.println("There was a previous subquery! TOBEIMPLEMENTED");
+		    if ((subquery_results.size() > 0)) {
+		    	subquery_results.retainAll(results);
+		    	results = subquery_results;
 		    }
 		    
 		    // Make sure to close the cursor
