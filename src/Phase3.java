@@ -73,13 +73,6 @@ public class Phase3 {
 					results = query_search.retrieve(q.substring(0,1), q.substring(2).toLowerCase(), results);
 					break;
 				case "range":
-					/*
-					 * TODO: QuerySearchRange will take in arguments rangeType, operator and rangeKey.
-					 * rangeType can be 'rscore', 'pprice' or 'rdate'.
-					 * operator can be '>' or '<'.
-					 * rangeKey can be a int or a date.
-					 */
-					results = query_range.retrieve(q, split_query[i+1], split_query[i+2], results);
 					i += 2;
 					break;
 				case "searchKey":
@@ -89,6 +82,23 @@ public class Phase3 {
 					System.out.println("Something's wrong");
 					break;
 				default:
+					break;
+			}
+			i++;
+		}
+		
+		for (int i = 0;  i < split_query.length; ) {
+			String q  = split_query[i];
+			String q_type = qp.analyze(q);
+			if (q_type.equals("range")) {
+					/*
+					 * TODO: QuerySearchRange will take in arguments rangeType, operator and rangeKey.
+					 * rangeType can be 'rscore', 'pprice' or 'rdate'.
+					 * operator can be '>' or '<'.
+					 * rangeKey can be a int or a date.
+					 */
+					results = query_range.retrieve(q, split_query[i+1], split_query[i+2], results);
+					i += 2;
 					break;
 			}
 			i++;
