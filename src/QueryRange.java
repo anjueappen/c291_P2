@@ -2,6 +2,7 @@
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.sleepycat.db.Cursor;
 import com.sleepycat.db.Database;
@@ -82,14 +83,14 @@ public class QueryRange {
 					c.close();
 					return ids;
 				}
-				
+
 				else {
 					System.out.println("GOT PREVIOUS SUBQUERY RESULTS");
 					for(String id: subquery_results){
 						System.out.println("ID:" + id);
 						key = new DatabaseEntry(value.getBytes("UTF-8"));
 						data = new DatabaseEntry(id.getBytes("UTF-8"));
-						
+
 						if (c.getSearchKeyRange(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
 							if(operator.equals(">")){
 								while(c.getNext(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
@@ -97,7 +98,7 @@ public class QueryRange {
 									if ( (new String(data.getData())).equals(id) ) {
 										ids.add(new String(data.getData())); 
 									}
-							
+
 								}
 							} 
 							else if(operator.equals("<")){
@@ -108,12 +109,12 @@ public class QueryRange {
 								}
 							}
 						}	
-						
+
 					}
 					c.close();
 					return ids;
 				}
-				
+
 			}
 
 			/**
@@ -210,10 +211,10 @@ public class QueryRange {
 				}else {
 					DatabaseEntry inputKey = new DatabaseEntry(value.getBytes("UTF-8"));
 					DatabaseEntry outputData = new DatabaseEntry();
-					for(String id: subquery_results){
-						inputKey.setData(id.getBytes());
+					for(String id: subquery_results){ //iterate over all the valid ids from prev query
+						inputKey.setData(id.getBytes()); //set the id inside the DataBaseEntry
 						inputKey.setSize(id.length());
-						c.getSearchKey(inputKey, outputData, LockMode.DEFAULT);  //get the full review 
+						c.getSearchKey(inputKey, outputData, LockMode.DEFAULT);  //get the full review- searching by ID
 						Long reviewDate = getRDate(new String(outputData.getData())); 
 
 						if (reviewDate != null) {
@@ -249,16 +250,19 @@ public class QueryRange {
 
 	public Long getRDate(String review) {
 		// split by comma except for if inside quotations
-		String[] pieces = review.split(",", -1);
+		/*String[] pieces = review.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 		int i = 0; 
 		for(String p: pieces){
 			System.out.println(i + "........" + p);
 			i++;
-		}
-		if(pieces[7].equals("unknown")){
+		}*/
+		ArrayList<String> pieces = splitIntoParts(review); 
+		System.out.println(pieces);
+		System.out.println("");
+		if(pieces.get(7).equals("unknown")){
 			return null; 
 		}
-		return Long.parseLong(pieces[7].trim())*1000;  
+		return Long.parseLong(pieces.get(7).trim())*1000;  
 	}
 
 	public Double getPPrice(String review){
@@ -273,6 +277,22 @@ public class QueryRange {
 		String[] pieces = review.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 		return pieces[0];
 	}
-	
+
+	public ArrayList<String> splitIntoParts(String input) {
+		ArrayList<String> result = new ArrayList<String>();
+		int start = 0;
+		boolean inQuotes = false;
+		for (int current = 0; current < input.length(); current++) {
+		    if (input.charAt(current) == '\"') inQuotes = !inQuotes; // toggle state
+		    boolean atLastChar = (current == input.length() - 1);
+		    if(atLastChar) result.add(input.substring(start));
+		    else if (input.charAt(current) == ',' && !inQuotes) {
+		        result.add(input.substring(start, current));
+		        start = current + 1;
+		    }
+		}
+		return result; 
+		
+	}
 
 }
