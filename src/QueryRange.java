@@ -115,27 +115,27 @@ public class QueryRange {
 				}
 				
 			}
-			
+
 			/**
 			 * PPRICE
 			 */
 			else if (rangeType.equals("pprice") ){
 				System.out.println("PRICE CHECK!");
 				c = rw_db.openCursor(null, null); 
-				
+
 				// first subquery!
 				if (subquery_results.size() == 0) {
 					System.out.println("FIRST SUBQUERY");
 					DatabaseEntry foundKey = new DatabaseEntry();
 					DatabaseEntry foundData = new DatabaseEntry();
-					
+
 					// we need to just iterate through ALL the reviews and compare pprice
 					while (c.getNext(foundKey, foundData, LockMode.DEFAULT) ==
 							OperationStatus.SUCCESS) {
 						String keyString = new String(foundKey.getData());
 
 						Double price = getPPrice(new String(foundData.getData())); 
-						
+
 						if (price != null) {
 							if(operator.equals(">") && price > Double.parseDouble(value)){
 								ids.add(keyString); 
@@ -143,14 +143,14 @@ public class QueryRange {
 								ids.add(keyString); 
 							}
 						}
-						
+
 						foundKey = new DatabaseEntry();
 						foundData = new DatabaseEntry();
 					}
 					c.close();
 					return ids;
 				}
-				
+
 				else {
 					System.out.println("GOT PREVIOUS SUBQUERY RESULTS");
 					for(String id: subquery_results){
@@ -178,30 +178,62 @@ public class QueryRange {
 			/**
 			 * RDATE
 			 */
-			
+
 			else if(rangeType.equals("rdate")){
 				c = rw_db.openCursor(null, null); 
 				SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
-				Long date = ((Date) fmt.parse(value)).getTime(); 
+				Long userInputDate = (fmt.parse(value)).getTime(); //date that user inputs for query
+				if(subquery_results.size() == 0){
+					DatabaseEntry outputKey = new DatabaseEntry();
+					DatabaseEntry outputData = new DatabaseEntry();
 
-				for(String id: subquery_results){
-					key.setData(id.getBytes());
-					key.setSize(id.length());
-					c.getSearchKey(key, data, LockMode.DEFAULT);  //get the full review 
-					Long reviewDate = getRDate(new String(data.getData())); 
-					
-					if(operator.equals(">") && reviewDate > date){
-						ids.add(id); 
-					}else if(operator.equals("<") && reviewDate < date){
-						ids.add(id); 
+					// we need to just iterate through ALL the reviews and compare pprice
+					while (c.getNext(outputKey, outputData, LockMode.DEFAULT) ==
+							OperationStatus.SUCCESS) {
+						String keyString = new String(outputKey.getData());
+
+						Long reviewDate = getRDate(new String(outputData.getData())); //date from the review in db
+
+						if (reviewDate != null) {
+							if(operator.equals(">") && (reviewDate > userInputDate)){
+								ids.add(keyString); 
+							}else if(operator.equals("<") && (reviewDate < userInputDate)){
+								ids.add(keyString); 
+							}
+						}
+
+						outputKey = new DatabaseEntry();
+						outputData = new DatabaseEntry();
 					}
+
+					return ids;
+				}else {
+					DatabaseEntry inputKey = new DatabaseEntry(value.getBytes("UTF-8"));
+					DatabaseEntry outputData = new DatabaseEntry();
+					for(String id: subquery_results){
+						inputKey.setData(id.getBytes());
+						inputKey.setSize(id.length());
+						c.getSearchKey(inputKey, outputData, LockMode.DEFAULT);  //get the full review 
+						Long reviewDate = getRDate(new String(outputData.getData())); 
+
+						if (reviewDate != null) {
+							if(operator.equals(">") && reviewDate > userInputDate){
+								ids.add(id); 
+							}else if(operator.equals("<") && reviewDate < userInputDate){
+								ids.add(id); 
+							}	
+						}
+
+					}
+					return ids; 
 				}
+
 			}else{
 				System.out.println("Range queries can only occur for score, product price (pprice) or review date (rdate)."); 
 				c = rw_db.openCursor(null, null);  
 				c.close();
 			}	
-			
+
 			c.close();
 		} catch (DatabaseException e) {
 			// TODO Auto-generated catch block
@@ -210,18 +242,23 @@ public class QueryRange {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return ids; 
 	}
 
 
 	public Long getRDate(String review) {
 		// split by comma except for if inside quotations
-		String[] pieces = review.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-		if(pieces[8].equals("unknown")){
-			return (long) -1; 
+		String[] pieces = review.split(",", -1);
+		int i = 0; 
+		for(String p: pieces){
+			System.out.println(i + "........" + p);
+			i++;
 		}
-		return Long.parseLong(pieces[8]);  
+		if(pieces[7].equals("unknown")){
+			return null; 
+		}
+		return Long.parseLong(pieces[7].trim())*1000;  
 	}
 
 	public Double getPPrice(String review){
