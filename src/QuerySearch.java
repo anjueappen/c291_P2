@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.sleepycat.db.Cursor;
 import com.sleepycat.db.Database;
@@ -54,6 +55,7 @@ public class QuerySearch {
 		    		}
 		    	}
 		    	
+		    	return (ArrayList<String>)Collections.sort(pResults);
 		    }
 		    
 		    System.out.println("Database name being used: " + std_db.getDatabaseName());
@@ -87,7 +89,7 @@ public class QuerySearch {
 			            if (!results.contains(dataString)) {
 			            	results.add(dataString);
 			            }
-			            System.out.println("dup "+ dataString);
+			            System.out.println(searchType + " dup "+ dataString);
 			        }
 			    } else {	//only one value
 			    	String keyString = new String(theKey.getData());
@@ -97,6 +99,7 @@ public class QuerySearch {
 		            if (!results.contains(dataString)) {
 		            	results.add(dataString);
 		            }
+		            System.out.println(searchType + " sing "+ dataString);
 			    }
 			    // Make sure to close the cursor
 			}  //end if

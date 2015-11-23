@@ -51,7 +51,7 @@ public class QueryProcessor {
 	}
 
 	public String analyze(String query) {
-		query.toLowerCase();
+		//query.toLowerCase();  // TODO haven't dealt with range yet
 		if(query.contains("p:") | query.contains("r:")) {
 			return "search";
 		}
