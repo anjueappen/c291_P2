@@ -87,19 +87,28 @@ public class QueryRange {
 					System.out.println("GOT PREVIOUS SUBQUERY RESULTS");
 					for(String id: subquery_results){
 						System.out.println("ID:" + id);
-						key = new DatabaseEntry(id.getBytes("UTF-8"));
-						data = new DatabaseEntry(id.getBytes("UTF-8"));	
-						if (c.getSearchKey(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-							Double price = getPPrice(new String(data.getData()));
-							// price is null if pprice is "unknown"
-							if (price != null) {
-								if(operator.equals(">") && price > Double.parseDouble(value)){
-									ids.add(id); 
-								}else if(operator.equals("<") && price < Double.parseDouble(value)){
-									ids.add(id); 
+						key = new DatabaseEntry(value.getBytes("UTF-8"));
+						data = new DatabaseEntry(id.getBytes("UTF-8"));
+						
+						if (c.getSearchKeyRange(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+							if(operator.equals(">")){
+								while(c.getNext(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+									System.out.println("Data: " + new String(data.getData()));
+									if ( (new String(data.getData())).equals(id) ) {
+										ids.add(new String(data.getData())); 
+									}
+							
+								}
+							} 
+							else if(operator.equals("<")){
+								while(c.getPrev(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+									if ( (new String(data.getData())).equals(id) ) {
+										ids.add(new String(data.getData())); 
+									}
 								}
 							}
-						}
+						}	
+						
 					}
 					c.close();
 					return ids;
@@ -227,6 +236,6 @@ public class QueryRange {
 		String[] pieces = review.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 		return pieces[0];
 	}
-
+	
 
 }
