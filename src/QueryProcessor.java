@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class QueryProcessor {
 	// (((r:|p:)[a-zA-Z0-9\.\/]+(\%?))|((rscore|pprice|rdate)\s*(<|>)\s*((\d{4}\/\d{2}\/\d{2})|\d(?:(\.\d+)?)))|([a-zA-Z0-9\.\/]+(\%?)))
-	protected static String QUERYMATCHER = "(((r:|p:)[a-zA-Z0-9\\.\\/]+(\\%?))|((rscore|pprice|rdate)\\s*(<|>)\\s*((\\d{4}\\/\\d{2}\\/\\d{2})|\\d+(?:(\\.\\d+)?)))|([a-zA-Z0-9\\.\\/]+(\\%?)))";
+	protected static String QUERYMATCHER = "(((r:|p:)[a-zA-Z0-9\\.\\/\\_]+(\\%?))|((rscore|pprice|rdate)\\s*(<|>)\\s*((\\d{4}\\/\\d{2}\\/\\d{2})|\\d+(?:(\\.\\d+)?)))|([a-zA-Z0-9\\.\\/\\_]+(\\%?)))";
 	protected Pattern QUERY;	
 	
 	protected String PMATCH = "p:";
@@ -32,13 +32,11 @@ public class QueryProcessor {
 	}
 	
 	public ArrayList<String> parseQuery(String query) {
-		System.out.println("Parsing query: " + query);
 		Matcher queryMatch = QUERY.matcher(query);
 		ArrayList<String> queries = new ArrayList<String>();
 		while(queryMatch.find()) {
 			queries.add(queryMatch.group(1));
 		}
-		System.out.println("Matched queries: " + queries);
 		queries = convertToValidQueries(queries);
 		return queries;
 	}
@@ -47,7 +45,6 @@ public class QueryProcessor {
 		ArrayList<String> validQueries = new ArrayList<String>();
 		for (String q: queries) {
 			String qtype = analyze(q);
-			System.out.println("qtype: " + qtype);
 			if (qtype.equals("range")) {
 				if (q.contains(">")) {
 					validQueries.add(q.split(">")[0].trim());
@@ -62,7 +59,6 @@ public class QueryProcessor {
 				validQueries.add(q);
 			}
 		}
-		System.out.println("Valid queries: " + validQueries);
 		return validQueries;
 	}
 

@@ -68,7 +68,6 @@ public class Phase3 {
 					results = query_search.retrieve(q.substring(0,1), q.substring(2).toLowerCase(), results);
 					break;
 				case "range":
-					System.out.println("will do this Range query after everything else.");
 					i += 2;
 					break;
 				case "searchKey":
@@ -87,12 +86,10 @@ public class Phase3 {
 			String q  = split_query[i];
 			String q_type = qp.analyze(q);
 			if (q_type.equals("range")) {
-				System.out.println("Range query.");
 				results = query_range.retrieve(q, split_query[i+1], split_query[i+2], results);
 				i += 2;
 			}
 			i++;
-			System.out.println(i + " / " + split_query.length);
 		}
 		
 		return results;

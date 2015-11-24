@@ -56,26 +56,75 @@ public class QueryRange {
 				value = value.concat(".0");
 				key = new DatabaseEntry(value.getBytes("UTF-8"));	// changed value so we need to change again
 				c = sc_db.openCursor(null, null); 
-				System.out.println("rscore: " + value);
+
+				Double MAX_RSCORE = 5.0;
+				// if less than max rscore, everything is valid
+				if ((Double.parseDouble(value) > MAX_RSCORE) && operator.equals("<")){
+					key = new DatabaseEntry();
+					data = new DatabaseEntry();
+					c.getLast(key, data, LockMode.DEFAULT);
+					ids.add(new String(data.getData()));
+					key = new DatabaseEntry();
+					data = new DatabaseEntry();
+					while(c.getPrev(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+						ids.add(new String(data.getData())); 
+						key = new DatabaseEntry();
+						data = new DatabaseEntry();
+					}
+					if (subquery_results.size() == 0 ) {
+						return ids;
+					} else {
+						return subquery_results;
+					}
+				} 
+				// if greater than max rscore, nothing is valid
+				else if ((Double.parseDouble(value) > MAX_RSCORE) && operator.equals(">")) {
+					if (subquery_results.size() == 0 ) {
+						return ids;
+					}				
+				}
+				
 				if (subquery_results.size() == 0) {
+					// get the closest matching key
 					if (c.getSearchKeyRange(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+						
+						// does it actually equal the key we want?? i.e. does it exist in the data??
+						// if not, then do not skip over this!
+						if (!(new String(key.getData())).equals(value)) {
+							System.out.println("CLOSEST MATCHING KEY: " + new String(key.getData()));
+							ids.add(new String(data.getData())); 
+						} 
+						
 						if(operator.equals("<")){
 							//move cursor up to the value actually greater 
-
-							if(c.getPrevNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-								ids.add(new String(data.getData())); 
+							if ((new String(key.getData())).equals(value)) {
+								if(c.getPrevNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+									ids.add(new String(data.getData())); 
+									key = new DatabaseEntry();
+									data = new DatabaseEntry();
+								}
 							}
+							
 
 							while(c.getPrev(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
 								ids.add(new String(data.getData())); 
+								key = new DatabaseEntry();
+								data = new DatabaseEntry();
 							}
-						}else if(operator.equals(">")){
+						} else if(operator.equals(">")) {
 							//move cursor down to the value actually greater 
-							if(c.getNextNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-								ids.add(new String(data.getData())); 
+							if ((new String(key.getData())).equals(value)) {
+								if(c.getNextNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+									ids.add(new String(data.getData()));
+									key = new DatabaseEntry();
+									data = new DatabaseEntry();
+								}
 							}
+							
 							while(c.getNext(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
 								ids.add(new String(data.getData())); 
+								key = new DatabaseEntry();
+								data = new DatabaseEntry();
 							}
 						}
 					} 
@@ -91,19 +140,32 @@ public class QueryRange {
 						data = new DatabaseEntry(id.getBytes("UTF-8"));
 
 						if (c.getSearchKeyRange(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+							
+							// does it actually equal the key we want?? i.e. does it exist in the data??
+							// if not, then do not skip over this!
+							if (!(new String(key.getData())).equals(value)) {
+								System.out.println("CLOSEST MATCHING KEY: " + new String(key.getData()));
+								ids.add(new String(data.getData())); 
+							} 
+							
 							if(operator.equals(">")){
 								while(c.getNext(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
 									System.out.println("Data: " + new String(data.getData()));
 									if ( (new String(data.getData())).equals(id) ) {
 										ids.add(new String(data.getData())); 
+										key = new DatabaseEntry(value.getBytes("UTF-8"));
+										data = new DatabaseEntry(id.getBytes("UTF-8"));
 									}
 
 								}
 							} 
+							
 							else if(operator.equals("<")){
 								while(c.getPrev(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
 									if ( (new String(data.getData())).equals(id) ) {
 										ids.add(new String(data.getData())); 
+										key = new DatabaseEntry(value.getBytes("UTF-8"));
+										data = new DatabaseEntry(id.getBytes("UTF-8"));
 									}
 								}
 							}
