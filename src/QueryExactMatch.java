@@ -5,6 +5,11 @@ import com.sleepycat.db.Database;
 import com.sleepycat.db.DatabaseEntry;
 import com.sleepycat.db.LockMode;
 import com.sleepycat.db.OperationStatus;
+/**
+ * Query class for exact String matches 
+ * @author anju
+ *
+ */
 
 public class QueryExactMatch {
 
@@ -12,6 +17,10 @@ public class QueryExactMatch {
 		// TODO Auto-generated method stub
 
 	}
+	/**
+	 * 
+	 * @param std_db
+	 */
 	public void query(Database std_db) {
 		Scanner user_input = new Scanner( System.in );
 		Cursor cursor; 
@@ -61,8 +70,6 @@ public class QueryExactMatch {
 			} 
 			user_input.close();
 		}
-
-		
 		
 	}
 

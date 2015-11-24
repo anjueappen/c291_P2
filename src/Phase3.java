@@ -20,7 +20,9 @@ public class Phase3 {
 	protected Database pt_db;
 	protected Database rt_db;
 	protected Database sc_db;
-
+/**
+ * Project phase three: take the user input and delegate each portion to appropriate Query class. 
+ */
 	public Phase3() {
 		input = new Scanner(System.in);
 		polling = true; 
@@ -55,6 +57,11 @@ public class Phase3 {
 		}
 		
 	}
+	/**
+	 * Determine the query type and delegate to query classes
+	 * @param query
+	 * @return List of review ids filtered from the queries. 
+	 */
 	// TODO go back and make case insensitive
 	public ArrayList<String> parseInput(String query) {
 		ArrayList<String> parsed_query = qp.parseQuery(query);
@@ -94,7 +101,9 @@ public class Phase3 {
 		
 		return results;
 	}
-	
+	/**
+	 * Setup DBs with .idx files
+	 */
 	public void createDatabases() {
 		DatabaseConfig dbConfig= new DatabaseConfig();
 		DatabaseConfig rwConfig= new DatabaseConfig();

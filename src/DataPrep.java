@@ -5,7 +5,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
-
+/**
+ * Phase 1: Take in the data from console and create key-value files
+ * @author anju
+ *
+ */
 public class DataPrep {
 	
 	private static DataPrepResources dp = new DataPrepResources(); 
