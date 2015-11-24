@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class QueryProcessor {
 	// (((r:|p:)[a-zA-Z0-9\.\/]+(\%?))|((rscore|pprice|rdate)\s*(<|>)\s*((\d{4}\/\d{2}\/\d{2})|\d(?:(\.\d+)?)))|([a-zA-Z0-9\.\/]+(\%?)))
-	protected static String QUERYMATCHER = "(((r:|p:)[a-zA-Z0-9\\.\\/]+(\\%?))|((rscore|pprice|rdate)\\s*(<|>)\\s*((\\d{4}\\/\\d{2}\\/\\d{2})|\\d(?:(\\.\\d+)?)))|([a-zA-Z0-9\\.\\/]+(\\%?)))";
+	protected static String QUERYMATCHER = "(((r:|p:)[a-zA-Z0-9\\.\\/]+(\\%?))|((rscore|pprice|rdate)\\s*(<|>)\\s*((\\d{4}\\/\\d{2}\\/\\d{2})|\\d+(?:(\\.\\d+)?)))|([a-zA-Z0-9\\.\\/]+(\\%?)))";
 	protected Pattern QUERY;	
 	
 	protected String PMATCH = "p:";
