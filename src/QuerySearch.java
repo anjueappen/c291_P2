@@ -35,9 +35,6 @@ public class QuerySearch {
 	 * @return ArrayList of returns.
 	 */
 	public ArrayList<String> retrieve(String searchType, String searchKey, ArrayList<String> subquery_results) {
-		System.out.println("searchType = " + searchType);
-		System.out.println("searchKey = " + searchKey);
-		
 		// partial matching! remember to get rid of '%' when passing into query function
 		if (searchKey.endsWith("%")) {
 			return partialMatchQuery(searchType, searchKey.substring(0, searchKey.length()-1), subquery_results);
@@ -82,12 +79,6 @@ public class QuerySearch {
 		    	
 		    	return pResults;
 		    }
-		    
-		    // TODO: remove this chunk
-	    	System.out.print("Previous subquery results: " );
-		    for (String s: subquery_results) {
-		    	System.out.print(s + ", ");
-		    }
 
 		    // Open a cursor using a database handle
 		    cursor = std_db.openCursor(null, null);
@@ -129,9 +120,6 @@ public class QuerySearch {
 		    		if (retVal == OperationStatus.SUCCESS) {	// it's a valid result
 		    			String keyString = new String(theKey.getData());
 				        String dataString = new String(theData.getData());
-			            // TODO: REMOVE PRINT LINE
-				        System.out.println("Key | Data : " +  keyString + " | " + 
-				                               dataString + "");
 				        if (!results.contains(dataString)) {	// no duplicates
 			            	results.add(dataString);
 			            }
@@ -198,12 +186,9 @@ public class QuerySearch {
             if (new String(theKey.getData()).startsWith(searchKey)) {
 
 			    if (cursor.count() > 1) {
-			    	System.out.println("Cursor count: " + cursor.count());
 			        while (retVal == OperationStatus.SUCCESS) {
 			            String keyString = new String(theKey.getData());
 			            String dataString = new String(theData.getData());
-			            System.out.println("Key | Data : " +  keyString + " | " + 
-			                               dataString + "");
 			            if (!results.contains(dataString)) {
 			            	results.add(dataString);
 			            }
@@ -211,9 +196,7 @@ public class QuerySearch {
 			        }
 			    } else {	//only one value
 			    	String keyString = new String(theKey.getData());
-		            String dataString = new String(theData.getData());
-		            System.out.println("Key | Data : " +  keyString + " | " + 
-		                               dataString + "");			            
+		            String dataString = new String(theData.getData());	            
 		            if (!results.contains(dataString)) {
 		            	results.add(dataString);
 		            }
@@ -258,7 +241,6 @@ public class QuerySearch {
 		        retVal = cursor.getNext(theKey, theData, LockMode.DEFAULT);
 		   } // first subquery
 			
-		    
 		   // subquery results are present so only retain results that exist in the subquery.
 		   if ((subquery_results.size() > 0)) {
 		    	subquery_results.retainAll(results);

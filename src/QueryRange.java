@@ -1,8 +1,5 @@
-
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.sleepycat.db.Cursor;
 import com.sleepycat.db.Database;
@@ -12,12 +9,10 @@ import com.sleepycat.db.LockMode;
 import com.sleepycat.db.OperationStatus;
 
 /**
+ * This class deals with range searches for rscore, pprice and rdate.
  * Taken and modified from  https://eclass.srv.ualberta.ca/pluginfile.php/2334524/mod_page/content/13/bdb_range.java 
  * Accessed: Nov. 21, 2015
- * @author anju
- *
  */
-//([a-zA-Z0-9\\.]+ |)(([a-zA-Z]+)( > | < )([0-9\\.]+)) 
 public class QueryRange {
 
 	Database pt_db;
@@ -34,12 +29,19 @@ public class QueryRange {
 	}
 
 	public ArrayList<String> retrieve(String rangeType, String operator, String rangeKey, ArrayList<String> subquery_results) {
-		System.out.println("rangeType = " + rangeType);
-		System.out.println("operator = " + operator);
-		System.out.println("rangeKey = " + rangeKey);
 		return query(rangeType, operator, rangeKey, subquery_results);
 	}
 
+	/**
+	 * This function 
+	 * @param rangeType is either rscore, pprice or rdate.
+	 * @param operator is either > or <
+	 * @param value is a string that represents an integer, double or a date in YYYY/MM/DD format
+	 * @param subquery_results if a subquery was performed before this function then the size of this
+	 * 	array list must be greater than 0. This should be handled differently since the indices to be checked
+	 *  have been narrowed down. Used for optimization.
+	 * @return
+	 */
 	public ArrayList<String> query(String rangeType, String operator, String value, ArrayList<String> subquery_results) {
 		Cursor c; 
 		ArrayList<String> ids = new ArrayList<>(); 
@@ -49,16 +51,18 @@ public class QueryRange {
 			DatabaseEntry data = new DatabaseEntry();
 
 			/**
-			 * RSCORE
+			 * rangeType = RSCORE.
+			 * Assumptions: maximum review score is 5.0. minimum review score is 1.0. review score cannot be unknown.
 			 */
-			if(rangeType.equals("rscore")){
+			if(rangeType.equals("rscore")) {
 				// keys of scores database are in the form of i.0 where i is an integer
 				value = value.concat(".0");
 				key = new DatabaseEntry(value.getBytes("UTF-8"));	// changed value so we need to change again
 				c = sc_db.openCursor(null, null); 
 
 				Double MAX_RSCORE = 5.0;
-				// if less than max rscore, everything is valid
+				
+				// if value is less than max rscore, everything in the database is valid!
 				if ((Double.parseDouble(value) > MAX_RSCORE) && operator.equals("<")){
 					key = new DatabaseEntry();
 					data = new DatabaseEntry();
@@ -77,6 +81,7 @@ public class QueryRange {
 						return subquery_results;
 					}
 				} 
+				
 				// if greater than max rscore, nothing is valid
 				else if ((Double.parseDouble(value) > MAX_RSCORE) && operator.equals(">")) {
 					if (subquery_results.size() == 0 ) {
@@ -91,12 +96,11 @@ public class QueryRange {
 						// does it actually equal the key we want?? i.e. does it exist in the data??
 						// if not, then do not skip over this!
 						if (!(new String(key.getData())).equals(value)) {
-							System.out.println("CLOSEST MATCHING KEY: " + new String(key.getData()));
 							ids.add(new String(data.getData())); 
 						} 
 						
 						if(operator.equals("<")){
-							//move cursor up to the value actually greater 
+							// going up the database
 							if ((new String(key.getData())).equals(value)) {
 								if(c.getPrevNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
 									ids.add(new String(data.getData())); 
@@ -111,8 +115,9 @@ public class QueryRange {
 								key = new DatabaseEntry();
 								data = new DatabaseEntry();
 							}
+							
 						} else if(operator.equals(">")) {
-							//move cursor down to the value actually greater 
+							// going down the database
 							if ((new String(key.getData())).equals(value)) {
 								if(c.getNextNoDup(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
 									ids.add(new String(data.getData()));
@@ -133,9 +138,7 @@ public class QueryRange {
 				}
 
 				else {
-					System.out.println("GOT PREVIOUS SUBQUERY RESULTS");
 					for(String id: subquery_results){
-						System.out.println("ID:" + id);
 						key = new DatabaseEntry(value.getBytes("UTF-8"));
 						data = new DatabaseEntry(id.getBytes("UTF-8"));
 
@@ -144,13 +147,11 @@ public class QueryRange {
 							// does it actually equal the key we want?? i.e. does it exist in the data??
 							// if not, then do not skip over this!
 							if (!(new String(key.getData())).equals(value)) {
-								System.out.println("CLOSEST MATCHING KEY: " + new String(key.getData()));
 								ids.add(new String(data.getData())); 
 							} 
 							
 							if(operator.equals(">")){
 								while(c.getNext(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
-									System.out.println("Data: " + new String(data.getData()));
 									if ( (new String(data.getData())).equals(id) ) {
 										ids.add(new String(data.getData())); 
 										key = new DatabaseEntry(value.getBytes("UTF-8"));
@@ -178,15 +179,13 @@ public class QueryRange {
 			}
 
 			/**
-			 * PPRICE
+			 * rangeType = PPRICE
 			 */
 			else if (rangeType.equals("pprice") ){
-				System.out.println("PRICE CHECK!");
 				c = rw_db.openCursor(null, null); 
 
 				// first subquery!
 				if (subquery_results.size() == 0) {
-					System.out.println("FIRST SUBQUERY");
 					DatabaseEntry foundKey = new DatabaseEntry();
 					DatabaseEntry foundData = new DatabaseEntry();
 
@@ -213,9 +212,7 @@ public class QueryRange {
 				}
 
 				else {
-					System.out.println("GOT PREVIOUS SUBQUERY RESULTS");
 					for(String id: subquery_results){
-						System.out.println("ID:" + id);
 						key = new DatabaseEntry(id.getBytes("UTF-8"));
 						data = new DatabaseEntry(id.getBytes("UTF-8"));	
 						if (c.getSearchKey(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
@@ -237,7 +234,7 @@ public class QueryRange {
 			}
 
 			/**
-			 * RDATE
+			 * rangeType = RDATE
 			 */
 
 			else if(rangeType.equals("rdate")){
@@ -248,7 +245,7 @@ public class QueryRange {
 					DatabaseEntry outputKey = new DatabaseEntry();
 					DatabaseEntry outputData = new DatabaseEntry();
 
-					// we need to just iterate through ALL the reviews and compare pprice
+					
 					while (c.getNext(outputKey, outputData, LockMode.DEFAULT) ==
 							OperationStatus.SUCCESS) {
 						String keyString = new String(outputKey.getData());
@@ -304,15 +301,12 @@ public class QueryRange {
 		return ids; 
 	}
 
-
+	/**
+	 * Returns the date of the review given the full text of review details.
+	 * @param review Full text of review details
+	 * @return date of the review in UNIX time format. null if date is unknown.
+	 */
 	public Long getRDate(String review) {
-		// split by comma except for if inside quotations
-		/*String[] pieces = review.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-		int i = 0; 
-		for(String p: pieces){
-			System.out.println(i + "........" + p);
-			i++;
-		}*/
 		ArrayList<String> pieces = splitIntoParts(review);
 		if(pieces.get(7).equals("unknown")){
 			return null; 
@@ -320,6 +314,11 @@ public class QueryRange {
 		return Long.parseLong(pieces.get(7).trim())*1000;  
 	}
 
+	/**
+	 * Returns the price of the product given the full text of review details.
+	 * @param review
+	 * @return price of the product as a double. null if price is unknown.
+	 */
 	public Double getPPrice(String review){
 		// split by comma except for if inside quotations
 		String[] pieces = review.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
@@ -329,11 +328,21 @@ public class QueryRange {
 		return Double.parseDouble(pieces[2]);
 	}
 	
+	/**
+	 * Returns the product id given the full text of review details.
+	 * @param review
+	 * @return id of the product as a string.
+	 */
 	public String getID(String review){
 		String[] pieces = review.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 		return pieces[0];
 	}
 
+	/**
+	 * Custom function to split review into parts.
+	 * @param input, the review full text details
+	 * @return an ArrayList of strings with each element being a field of the review.
+	 */
 	public ArrayList<String> splitIntoParts(String input) {
 		ArrayList<String> result = new ArrayList<String>();
 		int start = 0;
