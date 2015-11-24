@@ -39,5 +39,4 @@ rm -f sorted_pterms.txt
 rm -f sorted_rterms.txt
 rm -f sorted_scores.txt
 
-echo "All done!"
-echo "Run javac Phase2Test.java && java Phase2Test [xx].idx to test."
+echo "Phase 2 done. Index files generated."
