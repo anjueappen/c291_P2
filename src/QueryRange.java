@@ -145,14 +145,15 @@ public class QueryRange {
 				else {
 					for(String id: subquery_results){
 						key = new DatabaseEntry(value.getBytes("UTF-8"));
-						data = new DatabaseEntry(id.getBytes("UTF-8"));
+						data = new DatabaseEntry();
 
 						if (c.getSearchKeyRange(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-							
 							// does it actually equal the key we want?? i.e. does it exist in the data??
 							// if not, then do not skip over this!
 							if (!(new String(key.getData())).equals(value)) {
-								ids.add(new String(data.getData())); 
+								if ( (new String(data.getData())).equals(id) ) {
+									ids.add(new String(data.getData())); 
+								}
 							} 
 							
 							if(operator.equals(">")){
