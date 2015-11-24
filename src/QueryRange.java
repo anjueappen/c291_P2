@@ -88,7 +88,7 @@ public class QueryRange {
 				} 
 				
 				// if greater than max rscore, nothing is valid
-				else if ((Double.parseDouble(value) > MAX_RSCORE) && operator.equals(">")) {
+				else if ((Double.parseDouble(value) >= MAX_RSCORE) && operator.equals(">")) {
 					if (subquery_results.size() == 0 ) {
 						return ids;
 					}				
