@@ -61,7 +61,7 @@ public class QuerySearch {
 		    	// http://stackoverflow.com/questions/9917787/merging-two-arraylists-into-a-new-arraylist-with-no-duplicates-and-in-order-in
 		    	pResults.removeAll(rResults);
 		    	pResults.addAll(rResults);
-		    	
+		    	Collections.sort(pResults);
 		    	return pResults;
 		    }
 		    

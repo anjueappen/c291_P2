@@ -20,7 +20,6 @@ import com.sleepycat.db.OperationStatus;
 //([a-zA-Z0-9\\.]+ |)(([a-zA-Z]+)( > | < )([0-9\\.]+)) 
 public class QueryRange {
 
-
 	Database pt_db;
 	Database rt_db;
 	Database sc_db;
@@ -114,7 +113,6 @@ public class QueryRange {
 					c.close();
 					return ids;
 				}
-
 			}
 
 			/**
@@ -237,13 +235,10 @@ public class QueryRange {
 
 			c.close();
 		} catch (DatabaseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		return ids; 
 	}
 
@@ -256,9 +251,7 @@ public class QueryRange {
 			System.out.println(i + "........" + p);
 			i++;
 		}*/
-		ArrayList<String> pieces = splitIntoParts(review); 
-		System.out.println(pieces);
-		System.out.println("");
+		ArrayList<String> pieces = splitIntoParts(review);
 		if(pieces.get(7).equals("unknown")){
 			return null; 
 		}
@@ -273,6 +266,7 @@ public class QueryRange {
 		}
 		return Double.parseDouble(pieces[2]);
 	}
+	
 	public String getID(String review){
 		String[] pieces = review.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 		return pieces[0];
@@ -292,7 +286,6 @@ public class QueryRange {
 		    }
 		}
 		return result; 
-		
 	}
 
 }
