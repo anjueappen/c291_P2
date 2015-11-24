@@ -310,6 +310,7 @@ public class QueryRange {
 			c.close();
 		} catch (DatabaseException e) {
 		}catch (Exception e) {
+		
 		}
 		return ids; 
 	}
