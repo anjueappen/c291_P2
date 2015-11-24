@@ -96,7 +96,6 @@ public class QuerySearch {
 			            if (!results.contains(dataString)) {
 			            	results.add(dataString);
 			            }
-			            System.out.println(searchType + " dup "+ dataString);
 			        }
 			    } else {	//only one value
 			    	String keyString = new String(theKey.getData());
@@ -106,7 +105,6 @@ public class QuerySearch {
 		            if (!results.contains(dataString)) {
 		            	results.add(dataString);
 		            }
-		            System.out.println(searchType + " sing "+ dataString);
 			    }
 			    // Make sure to close the cursor
 			}  //end if
