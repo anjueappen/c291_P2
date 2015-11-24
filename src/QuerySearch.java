@@ -49,13 +49,19 @@ public class QuerySearch {
 		    	ArrayList<String> rResults = query("r", searchKey, subquery_results);
 		    	
 		    	// get the final results, merge but no duplicates
+		    	/*
 		    	for(String id : rResults){
 		    		if (!pResults.contains(id)){
 		    			pResults.add(id);
 		    		}
 		    	}
+				*/
 		    	// TODO Kirsten needs to sort and check optimization
-		    	// TODO delete this. this change should have gone through
+		    	// Ediz Turkoglu, Accessed 2015-11-23, 
+		    	// http://stackoverflow.com/questions/9917787/merging-two-arraylists-into-a-new-arraylist-with-no-duplicates-and-in-order-in
+		    	pResults.removeAll(rResults);
+		    	pResults.addAll(rResults);
+		    	
 		    	return pResults;
 		    }
 		    
