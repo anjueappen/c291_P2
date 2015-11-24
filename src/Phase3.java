@@ -78,7 +78,7 @@ public class Phase3 {
 					i += 2;
 					break;
 				case "searchKey":
-					results = query_search.retrieve("b", q, results);
+					results = query_search.retrieve("b", q.toLowerCase(), results);
 					break;
 				case "Error":
 					System.out.println("Something's wrong");
