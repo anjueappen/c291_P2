@@ -50,6 +50,15 @@ public class Phase3 {
 			System.out.print("Enter a query. [E to exit]: ");
 			query = input.nextLine();
 			if (query.equals("E")) {
+				try {
+					pt_db.close();
+					sc_db.close();
+					rt_db.close();
+					rw_db.close(); 
+				} catch (DatabaseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			    break;
 			}
 			try {
