@@ -56,7 +56,10 @@ public class QueryRange {
 			 */
 			if(rangeType.equals("rscore")) {
 				// keys of scores database are in the form of i.0 where i is an integer
-				value = value.concat(".0");
+				if(!value.contains(".")){
+					value = value.concat(".0");	
+				}
+				
 				key = new DatabaseEntry(value.getBytes("UTF-8"));	// changed value so we need to change again
 				c = sc_db.openCursor(null, null); 
 
@@ -182,6 +185,10 @@ public class QueryRange {
 			 * rangeType = PPRICE
 			 */
 			else if (rangeType.equals("pprice") ){
+				System.out.println("PRICE CHECK!");
+				if(!value.contains(".")){
+					value = value.concat(".00");	
+				}
 				c = rw_db.openCursor(null, null); 
 
 				// first subquery!
