@@ -155,15 +155,13 @@ public class QuerySearch {
 	    	ArrayList<String> pResults = partialMatchQuery("p", searchKey, subquery_results);
 	    	ArrayList<String> rResults = partialMatchQuery("r", searchKey, subquery_results);
 	    	
-	    	// get the final results, merge but no duplicates
-	    	for(String id : rResults){
-	    		if (!pResults.contains(id)){
-	    			pResults.add(id);
-	    		}
-	    	}
+	    	pResults.removeAll(rResults);
+	    	pResults.addAll(rResults);
+	    	
+	    	Collections.sort(pResults);
+	    	return pResults;
 	    	// TODO Kirsten needs to sort and check optimization
 	    	// TODO delete this. this change should have gone through
-	    	return pResults;
 	    }
 		
 		try {
