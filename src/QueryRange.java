@@ -309,9 +309,7 @@ public class QueryRange {
 
 			c.close();
 		} catch (DatabaseException e) {
-			e.printStackTrace();
 		}catch (Exception e) {
-			e.printStackTrace();
 		}
 		return ids; 
 	}

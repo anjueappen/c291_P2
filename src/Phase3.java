@@ -56,8 +56,6 @@ public class Phase3 {
 					rt_db.close();
 					rw_db.close(); 
 				} catch (DatabaseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 			    break;
 			}
@@ -71,7 +69,6 @@ public class Phase3 {
 				query_reviews.getReviews(results);
 			} catch (Exception e) {
 				System.out.println("Something went wrong.");
-				e.printStackTrace();
 			}
 
 		}
@@ -145,9 +142,7 @@ public class Phase3 {
 			rt_db = new Database("rt.idx", null, dbConfig);
 			sc_db = new Database("sc.idx", null, dbConfig);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (DatabaseException e) {
-			e.printStackTrace();
 		}
 		
 		System.out.println("Databases ready.");
