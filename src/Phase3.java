@@ -57,19 +57,14 @@ public class Phase3 {
 	}
 	// TODO go back and make case insensitive
 	public ArrayList<String> parseInput(String query) {
-		String[] split_query = query.split("\\s+");
+		ArrayList<String> parsed_query = qp.parseQuery(query);
+		String[] split_query = parsed_query.toArray(new String[parsed_query.size()]);
 		ArrayList<String> results = new ArrayList<String>();
 		for (int i = 0;  i < split_query.length; ) {
 			String q  = split_query[i];
 			String q_type = qp.analyze(q);
 			switch (q_type) {
 				case "search":
-					/*
-					 * TODO: QuerySearch will take in arguments searchType and searchKey.
-					 * searchType is either 'p' or 'r' or 'b' (for both). Product or reviews.
-					 * searchKey is the string to match, can be partial or full. The class
-					 * can figure that out. Just check if it ends with a %.
-					 */
 					results = query_search.retrieve(q.substring(0,1), q.substring(2).toLowerCase(), results);
 					break;
 				case "range":
