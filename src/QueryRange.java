@@ -53,6 +53,8 @@ public class QueryRange {
 			/**
 			 * rangeType = RSCORE.
 			 * Assumptions: maximum review score is 5.0. minimum review score is 1.0. review score cannot be unknown.
+			 * Parses the user's score, gets the closest value on the score database and adds the ids up or down, 
+			 * based on the operator. The IDs (values) in the valid score range is returned. 
 			 */
 			if(rangeType.equals("rscore")) {
 				// keys of scores database are in the form of i.0 where i is an integer
