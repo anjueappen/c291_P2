@@ -106,29 +106,17 @@ public class QuerySearch {
 			        while (retVal == OperationStatus.SUCCESS) {
 			            String keyString = new String(theKey.getData());
 			            String dataString = new String(theData.getData());
-			            // TODO: REMOVE PRINT LINE
-			            System.out.println("Key | Data : " +  keyString + " | " + 
-			                               dataString + "");
-			   
 			            retVal = cursor.getNextDup(theKey, theData, LockMode.DEFAULT);
 			            if (!results.contains(dataString)) {
 			            	results.add(dataString);
 			            }
-			            
-			            // TODO: REMOVE PRINT LINE
-			            System.out.println(searchType + " dup "+ dataString);
 			        }
 			    } else {	// only one value
 			    	String keyString = new String(theKey.getData());
 		            String dataString = new String(theData.getData());
-		            // TODO: REMOVE PRINT LINE
-		            System.out.println("Key | Data : " +  keyString + " | " + 
-		                               dataString + "");
 		            if (!results.contains(dataString)) {	// no duplicates in results!
 		            	results.add(dataString);
 		            }
-		            // TODO: REMOVE PRINT LINE
-		            System.out.println(searchType + " sing "+ dataString);
 			    }
 			}  //end if first subquery
 		    
