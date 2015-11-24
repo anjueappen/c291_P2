@@ -1,6 +1,5 @@
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 import com.sleepycat.db.Database;
@@ -8,6 +7,9 @@ import com.sleepycat.db.DatabaseConfig;
 import com.sleepycat.db.DatabaseException;
 import com.sleepycat.db.DatabaseType;
 
+/**
+ * PHASE 3: Takes user input, parses the query, delegates each subquery to appropriate Query class and prints results.
+ */
 public class Phase3 {
 	protected static Scanner input;
 	protected static Boolean polling;
@@ -20,13 +22,13 @@ public class Phase3 {
 	protected Database pt_db;
 	protected Database rt_db;
 	protected Database sc_db;
-/**
- * Project phase three: take the user input and delegate each portion to appropriate Query class. 
- */
+
 	public Phase3() {
 		input = new Scanner(System.in);
 		polling = true; 
 		qp = new QueryProcessor();
+		
+		// create databases and pass them onto appropriate query classes.
 		createDatabases();
 		query_search = new QuerySearch(pt_db, rt_db);
 		query_range = new QueryRange(pt_db, rt_db, sc_db, rw_db);
@@ -38,6 +40,9 @@ public class Phase3 {
 		p3.start();
 	}
 	
+	/**
+	 * This function is the main loop that asks the user for their query and returns results.
+	 */
 	public void start() {
 		ArrayList<String> results = new ArrayList<String>();
 		while (polling) {
@@ -48,25 +53,34 @@ public class Phase3 {
 			    break;
 			}
 			try {
-				results = parseInput(query);
+				// User query must be parsed by the Query Processor. Convert to an array of strings to be analyzed.
+				ArrayList<String> parsed_query = qp.parseQuery(query);
+				String[] split_query = parsed_query.toArray(new String[parsed_query.size()]);
+				results = analyze(split_query);
+				
+				// match to reviews, they will print.
 				query_reviews.getReviews(results);
 			} catch (Exception e) {
-				// TODO handle
+				System.out.println("Something went wrong.");
+				e.printStackTrace();
 			}
 
 		}
 		
 	}
+	
 	/**
-	 * Determine the query type and delegate to query classes
-	 * @param query
-	 * @return List of review ids filtered from the queries. 
+	 * Takes a query split into valid subqueries.
+	 * Valid in this context means each element of the String array is a keyword with type search, range or searchKey.
+	 * 		The type of keyword is determined by the Query Processor.
+	 * 		Range keywords are always followed by an operator and a rangeKey.
+	 * Range searches are completed after all other subqueries.
+	 * @param split_query is an array of strings split into valid subqueries.
+	 * @return an ArrayList of strings that correspond to review indices.
 	 */
-	// TODO go back and make case insensitive
-	public ArrayList<String> parseInput(String query) {
-		ArrayList<String> parsed_query = qp.parseQuery(query);
-		String[] split_query = parsed_query.toArray(new String[parsed_query.size()]);
+	public ArrayList<String> analyze(String[] split_query) {
 		ArrayList<String> results = new ArrayList<String>();
+		
 		for (int i = 0;  i < split_query.length; ) {
 			String q  = split_query[i];
 			String q_type = qp.analyze(q);
@@ -101,6 +115,7 @@ public class Phase3 {
 		
 		return results;
 	}
+	
 	/**
 	 * Setup DBs with .idx files
 	 */
@@ -126,6 +141,6 @@ public class Phase3 {
 			e.printStackTrace();
 		}
 		
-		System.out.println("Finished creating databases.");
+		System.out.println("Databases ready.");
 	}
 }
