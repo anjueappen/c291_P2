@@ -58,15 +58,15 @@ public class DataPrep {
 	 */
 	private String makeReviewsTxtFormat(Review r){
 		String review = "";
-		review += r.getProductId() + ", "; 
-		review +=  "\"" + r.getProductTitle() + "\"" + ", ";
-		review +=  r.getPrice() + ", "; 
-		review +=  r.getUserId() + ", "; 
-		review +=  "\"" + r.getProfileName() + "\"" + ", ";
-		review +=  r.getHelpfulness() + ", "; 
-		review +=  r.getScore() + ", ";
-		review +=  r.getTime() + ", ";
-		review +=  "\"" + r.getSummary() + "\"" + ", ";
+		review += r.getProductId() + ","; 
+		review +=  "\"" + r.getProductTitle() + "\"" + ",";
+		review +=  r.getPrice() + ","; 
+		review +=  r.getUserId() + ","; 
+		review +=  "\"" + r.getProfileName() + "\"" + ",";
+		review +=  r.getHelpfulness() + ","; 
+		review +=  r.getScore() + ",";
+		review +=  r.getTime() + ",";
+		review +=  "\"" + r.getSummary() + "\"" + ",";
 		review +=  "\"" + r.getText() + "\"";
 		return review; 
 	}

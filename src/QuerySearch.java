@@ -150,9 +150,22 @@ public class QuerySearch {
 	    	std_db = pt_db;
 	    } else if (searchType.equals("r")){
 	    	std_db = rt_db;
-	    }else{//b
+	    }else{ // b
 	    	// implement
+	    	ArrayList<String> pResults = partialMatchQuery("p", searchKey, subquery_results);
+	    	ArrayList<String> rResults = partialMatchQuery("r", searchKey, subquery_results);
+	    	
+	    	// get the final results, merge but no duplicates
+	    	for(String id : rResults){
+	    		if (!pResults.contains(id)){
+	    			pResults.add(id);
+	    		}
+	    	}
+	    	// TODO Kirsten needs to sort and check optimization
+	    	// TODO delete this. this change should have gone through
+	    	return pResults;
 	    }
+		
 		try {
 		    // Create DatabaseEntry objects
 		    // searchKey is some String.
@@ -170,6 +183,8 @@ public class QuerySearch {
 		     
 		    	// Count the number of duplicates. If the count is greater than 1, 
 			    // print the duplicates.
+            if (new String(theKey.getData()).startsWith(searchKey)) {
+
 			    if (cursor.count() > 1) {
 			    	System.out.println("Cursor count: " + cursor.count());
 			        while (retVal == OperationStatus.SUCCESS) {
@@ -193,6 +208,7 @@ public class QuerySearch {
 
 			    }
 			    
+            }
 			    theKey = new DatabaseEntry();
 	            theData = new DatabaseEntry();
 	            
