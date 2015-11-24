@@ -48,15 +48,6 @@ public class QuerySearch {
 		    	ArrayList<String> pResults = query("p", searchKey, subquery_results);
 		    	ArrayList<String> rResults = query("r", searchKey, subquery_results);
 		    	
-		    	// get the final results, merge but no duplicates
-		    	/*
-		    	for(String id : rResults){
-		    		if (!pResults.contains(id)){
-		    			pResults.add(id);
-		    		}
-		    	}
-				*/
-		    	// TODO Kirsten needs to sort and check optimization
 		    	// Ediz Turkoglu, Accessed 2015-11-23, 
 		    	// http://stackoverflow.com/questions/9917787/merging-two-arraylists-into-a-new-arraylist-with-no-duplicates-and-in-order-in
 		    	pResults.removeAll(rResults);
@@ -149,17 +140,13 @@ public class QuerySearch {
 	    } else if (searchType.equals("r")){
 	    	std_db = rt_db;
 	    }else{ // b
-	    	// implement
 	    	ArrayList<String> pResults = partialMatchQuery("p", searchKey, subquery_results);
 	    	ArrayList<String> rResults = partialMatchQuery("r", searchKey, subquery_results);
 	    	
 	    	pResults.removeAll(rResults);
 	    	pResults.addAll(rResults);
-	    	
 	    	Collections.sort(pResults);
 	    	return pResults;
-	    	// TODO Kirsten needs to sort and check optimization
-	    	// TODO delete this. this change should have gone through
 	    }
 		
 		try {
