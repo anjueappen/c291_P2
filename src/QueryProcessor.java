@@ -50,13 +50,13 @@ public class QueryProcessor {
 			System.out.println("qtype: " + qtype);
 			if (qtype.equals("range")) {
 				if (q.contains(">")) {
-					validQueries.add(q.split(">")[0]);
+					validQueries.add(q.split(">")[0].trim());
 					validQueries.add(">");
-					validQueries.add(q.split(">")[1]);
+					validQueries.add(q.split(">")[1].trim());
 				} else {
-					validQueries.add(q.split("<")[0]);
+					validQueries.add(q.split("<")[0].trim());
 					validQueries.add("<");
-					validQueries.add(q.split("<")[1]);
+					validQueries.add(q.split("<")[1].trim());
 				}
 			} else {
 				validQueries.add(q);
