@@ -36,7 +36,7 @@ rm -f temp_rterms.txt
 rm -f temp_scores.txt
 
 rm -f sorted_pterms.txt
-rm -f sorted_rtmers.txt
+rm -f sorted_rterms.txt
 rm -f sorted_scores.txt
 
 echo "All done!"
