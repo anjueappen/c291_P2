@@ -112,7 +112,7 @@ public class QueryRange {
 								}
 							}
 							
-
+							//Add each ID moving upwards	
 							while(c.getPrev(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
 								ids.add(new String(data.getData())); 
 								key = new DatabaseEntry();
@@ -128,7 +128,7 @@ public class QueryRange {
 									data = new DatabaseEntry();
 								}
 							}
-							
+							//Add each id, moving downwards. 
 							while(c.getNext(key, data, LockMode.DEFAULT) == OperationStatus.SUCCESS){
 								ids.add(new String(data.getData())); 
 								key = new DatabaseEntry();
@@ -183,6 +183,9 @@ public class QueryRange {
 
 			/**
 			 * rangeType = PPRICE
+			 * Parses the user's inputted price and the review price as doubles and compares. 
+			 * This comparison is iterated through either all the reviews in the review database 
+			 * or the subset of valid ids from a previous query. 
 			 */
 			else if (rangeType.equals("pprice") ){
 				System.out.println("PRICE CHECK!");
@@ -242,6 +245,8 @@ public class QueryRange {
 
 			/**
 			 * rangeType = RDATE
+			 * Parses the user's input and converts to milliseconds from epoch. Converts the Unix time from
+			 * review to the same metric and compares, as per the operator. 
 			 */
 
 			else if(rangeType.equals("rdate")){
